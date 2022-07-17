@@ -5,9 +5,10 @@ from rest_framework.response import Response
 from spares_tracker.vehicles.models import (
     Country, VehicleModel, Vehicle)
 from spares_tracker.vehicles.services import vehicle_create
+from spares_tracker.api.mixins import ApiAuthMixin
 
 
-class VehicleCreateApi(APIView):
+class VehicleCreateApi(ApiAuthMixin, APIView):
     class InputSerializer(serializers.Serializer):
         MONTH_CHOICES = (
             (1, 'January'),
@@ -74,7 +75,6 @@ class VehicleCreateApi(APIView):
         steering = serializers.ChoiceField(choices = Vehicle.Steering.choices ,required=True)
 
     def post(self, request):
-        print('vehicle create called:::::::::::::::::::::::::')
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

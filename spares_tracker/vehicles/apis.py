@@ -147,8 +147,8 @@ class VehicleListApi(APIView):
 
         data = self.OutputSerializer(vehicles, many=True).data
         return Response(data)
-    
-    
+
+
 class VehicleDeleteApi(APIView):
     def post(self, request, vehicle_id):
         vehicle = get_object(Vehicle, pk=vehicle_id)

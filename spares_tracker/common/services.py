@@ -1,7 +1,7 @@
 from typing import List, Dict, Any, Tuple
 
 from spares_tracker.common.types import DjangoModelType
-
+from django.core.exceptions import ValidationError
 
 def model_update(
     *,
@@ -27,8 +27,6 @@ def model_update(
         2. A boolean value representing whether we performed an update or not.
     """
     has_updated = False
-    
-    print(f'data:::::: {data}')
 
     for field in fields:
         # Skip if a field is not present in the actual data
@@ -36,7 +34,6 @@ def model_update(
             continue
 
         if getattr(instance, field) != data[field]:
-            print('deleted:::::')
             has_updated = True
             setattr(instance, field, data[field])
 
@@ -49,3 +46,18 @@ def model_update(
         instance.save(update_fields=fields)
 
     return instance, has_updated
+
+
+def model_delete(
+    *,
+    instance: DjangoModelType,
+) -> None:
+
+    data = {'removed': True}
+    fields = ['removed', ]
+
+    model_update(
+        instance=instance,
+        fields=fields,
+        data=data
+    )

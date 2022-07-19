@@ -6,5 +6,5 @@ from spares_tracker.vehicles.filters import BaseVehicleFilter
 def vehicle_list(*, filters=None) -> QuerySet[Vehicle]:
     filters = filters or {}
 
-    qs = Vehicle.objects.all()
+    qs = Vehicle.objects.filter(removed=False)
     return BaseVehicleFilter(filters, qs).qs

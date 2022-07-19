@@ -27,6 +27,8 @@ def model_update(
         2. A boolean value representing whether we performed an update or not.
     """
     has_updated = False
+    
+    print(f'data:::::: {data}')
 
     for field in fields:
         # Skip if a field is not present in the actual data
@@ -34,6 +36,7 @@ def model_update(
             continue
 
         if getattr(instance, field) != data[field]:
+            print('deleted:::::')
             has_updated = True
             setattr(instance, field, data[field])
 

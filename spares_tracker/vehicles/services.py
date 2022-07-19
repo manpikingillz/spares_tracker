@@ -2,6 +2,8 @@ from spares_tracker.vehicles.models import Vehicle
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from spares_tracker.common.services import model_update
+from collections import OrderedDict
+
 
 
 MANUFACTURE_YEAR_GREATER_THAN_REGISTRATION_YEAR = 'Manufacture year cannot be greater than registration year'
@@ -9,6 +11,7 @@ MANUFACTURE_MONTH_GREATER_THAN_REGISTRATION_YEAR_IN_SAME_YEAR = '''
 Manufacture Month can not be greater than registration month in the same year.
 '''
 VEHICLE_INSTANCE_IS_NONE='You attempted updating a vehicle that does not exist!'
+VEHICLE_INSTANCE_IS_NONE_DELETE='You attempted deleting a vehicle that does not exist!'
 
 def vehicle_create(
     *,
@@ -84,7 +87,8 @@ def vehicle_update(*, vehicle: Vehicle, data) -> Vehicle:
         'transmission',
         'body_type',
         'drive_train',
-        'steering'
+        'steering',
+        'removed'
     ]
 
     if not vehicle:
@@ -95,5 +99,16 @@ def vehicle_update(*, vehicle: Vehicle, data) -> Vehicle:
         fields=non_side_effect_fields,
         data=data
     )
+    print(f'vehicle::: {_vehicle}')
 
     return _vehicle
+
+
+@transaction.atomic
+def vehicle_delete(*, vehicle: Vehicle):
+    if not vehicle:
+        raise ValidationError(VEHICLE_INSTANCE_IS_NONE_DELETE)
+
+    _dict_data = OrderedDict()
+    _dict_data['removed'] = True
+    vehicle_update(vehicle, data=_dict_data)

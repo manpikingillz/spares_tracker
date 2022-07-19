@@ -8,6 +8,7 @@ MANUFACTURE_YEAR_GREATER_THAN_REGISTRATION_YEAR = 'Manufacture year cannot be gr
 MANUFACTURE_MONTH_GREATER_THAN_REGISTRATION_YEAR_IN_SAME_YEAR = '''
 Manufacture Month can not be greater than registration month in the same year.
 '''
+VEHICLE_INSTANCE_IS_NONE='You attempted updating a vehicle that does not exist!'
 
 def vehicle_create(
     *,
@@ -85,11 +86,14 @@ def vehicle_update(*, vehicle: Vehicle, data) -> Vehicle:
         'drive_train',
         'steering'
     ]
-    
-    vehicle, has_updated = model_update(
+
+    if not vehicle:
+        raise ValidationError(VEHICLE_INSTANCE_IS_NONE)
+
+    _vehicle, has_updated = model_update(
         instance=vehicle,
         fields=non_side_effect_fields,
         data=data
     )
-    
-    return vehicle
+
+    return _vehicle

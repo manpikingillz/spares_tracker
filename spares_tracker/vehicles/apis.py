@@ -117,8 +117,15 @@ class VehicleListApi(APIView):
         drive_train = serializers.ChoiceField(choices = Vehicle.DriveTrain.choices ,required=True)
         steering = serializers.ChoiceField(choices = Vehicle.Steering.choices ,required=True)
 
+    class FilterSerializer(serializers.Serializer):
+        number_plate = serializers.CharField(required=False, max_length=20)
+
     def get(self, request):
-        vehicles = vehicle_list()
+        # Make sure the filters are valid if passed
+        filters_serializer = self.FilterSerializer(data=request.query_params)
+        filters_serializer.is_valid(raise_exception=True)
+
+        vehicles = vehicle_list(filters=filters_serializer.validated_data)
 
         data = self.OutputSerializer(vehicles, many=True).data
         return Response(data)

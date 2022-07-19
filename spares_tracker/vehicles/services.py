@@ -1,11 +1,14 @@
 from spares_tracker.vehicles.models import Vehicle
 from django.core.exceptions import ValidationError
+from django.db import transaction
+from spares_tracker.common.services import model_update
 
 
 MANUFACTURE_YEAR_GREATER_THAN_REGISTRATION_YEAR = 'Manufacture year cannot be greater than registration year'
 MANUFACTURE_MONTH_GREATER_THAN_REGISTRATION_YEAR_IN_SAME_YEAR = '''
 Manufacture Month can not be greater than registration month in the same year.
 '''
+VEHICLE_INSTANCE_IS_NONE='You attempted updating a vehicle that does not exist!'
 
 def vehicle_create(
     *,
@@ -61,3 +64,36 @@ def vehicle_create(
     vehicle.save()
 
     return vehicle
+
+
+@transaction.atomic
+def vehicle_update(*, vehicle: Vehicle, data) -> Vehicle:
+    non_side_effect_fields = [
+        'number_plate',
+        'country_of_registration',
+        'chasis_number',
+        'registration_year',
+        'registration_month',
+        'manufacture_year',
+        'manufacture_month',
+        'vehicle_model',
+        'vehicle_model_code',
+        'engine_size',
+        'exterior_color',
+        'fuel',
+        'transmission',
+        'body_type',
+        'drive_train',
+        'steering'
+    ]
+
+    if not vehicle:
+        raise ValidationError(VEHICLE_INSTANCE_IS_NONE)
+
+    _vehicle, has_updated = model_update(
+        instance=vehicle,
+        fields=non_side_effect_fields,
+        data=data
+    )
+
+    return _vehicle

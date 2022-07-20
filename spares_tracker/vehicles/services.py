@@ -2,8 +2,6 @@ from spares_tracker.vehicles.models import Vehicle
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from spares_tracker.common.services import model_update, model_delete
-from collections import OrderedDict
-
 
 
 MANUFACTURE_YEAR_GREATER_THAN_REGISTRATION_YEAR = 'Manufacture year cannot be greater than registration year'

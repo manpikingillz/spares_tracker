@@ -3,11 +3,12 @@ from rest_framework import serializers
 from rest_framework import status
 from rest_framework.response import Response
 from spares_tracker.vehicles.models import (
-    Country, VehicleModel, Vehicle)
+    VehicleModel, Vehicle)
 from spares_tracker.vehicles.services import vehicle_create, vehicle_update, vehicle_delete
 from spares_tracker.vehicles.selectors import vehicle_list
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import get_object
+from spares_tracker.setup.models import Country
 
 
 class VehicleCreateApi(ApiAuthMixin, APIView):

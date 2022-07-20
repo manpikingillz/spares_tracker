@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from spares_tracker.vehicles.models import (
     Country, VehicleModel, Vehicle)
-from spares_tracker.vehicles.services import vehicle_create, vehicle_update
+from spares_tracker.vehicles.services import vehicle_create, vehicle_update, vehicle_delete
 from spares_tracker.vehicles.selectors import vehicle_list
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import get_object
@@ -133,6 +133,7 @@ class VehicleListApi(APIView):
         body_type = serializers.ChoiceField(choices = Vehicle.BodyType.choices ,required=True)
         drive_train = serializers.ChoiceField(choices = Vehicle.DriveTrain.choices ,required=True)
         steering = serializers.ChoiceField(choices = Vehicle.Steering.choices ,required=True)
+        removed = serializers.BooleanField(required=False)
 
     class FilterSerializer(serializers.Serializer):
         number_plate = serializers.CharField(required=False, max_length=20)
@@ -146,3 +147,12 @@ class VehicleListApi(APIView):
 
         data = self.OutputSerializer(vehicles, many=True).data
         return Response(data)
+
+
+class VehicleDeleteApi(APIView):
+    def post(self, request, vehicle_id):
+        vehicle = get_object(Vehicle, pk=vehicle_id)
+
+        vehicle_delete(vehicle=vehicle)
+
+        return Response(status=status.HTTP_200_OK)

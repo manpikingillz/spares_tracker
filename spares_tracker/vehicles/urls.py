@@ -4,7 +4,9 @@ from .apis import (
     VehicleCreateApi,
     VehicleListApi,
     VehicleUpdateApi,
-    VehicleDeleteApi
+    VehicleDeleteApi,
+    VehicleMakeApi,
+    VehicleModelApi
 )
 
 
@@ -13,4 +15,6 @@ urlpatterns = [
     path('<int:vehicle_id>/update/', VehicleUpdateApi.as_view(), name='vehicle_update'),
     path('<int:vehicle_id>/delete/', VehicleDeleteApi.as_view(), name='vehicle_delete'),
     path('', VehicleListApi.as_view(), name='vehicle_list'),
+    path('vehicle_makes/', VehicleMakeApi.as_view(), name='vehicle_make_list'),
+    path('vehicle_models/', VehicleModelApi.as_view(), name='vehicle_model_list'),
 ]

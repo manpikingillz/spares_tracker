@@ -3,9 +3,9 @@ from rest_framework import serializers
 from rest_framework import status
 from rest_framework.response import Response
 from spares_tracker.vehicles.models import (
-    VehicleModel, Vehicle)
+    VehicleMake, VehicleModel, Vehicle)
 from spares_tracker.vehicles.services import vehicle_create, vehicle_update, vehicle_delete
-from spares_tracker.vehicles.selectors import vehicle_list
+from spares_tracker.vehicles.selectors import vehicle_list, vehicle_make_list,vehicle_model_list
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import get_object
 from spares_tracker.setup.models import Country
@@ -157,3 +157,35 @@ class VehicleDeleteApi(ApiAuthMixin, APIView):
         vehicle_delete(vehicle=vehicle)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class VehicleMakeApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        vehicle_make_name = serializers.CharField(required=True, max_length=255)
+
+    def get(self, request):
+        vehicle_makes = vehicle_make_list()
+
+        data = self.OutputSerializer(vehicle_makes, many=True).data
+        return Response(data)
+
+
+class VehicleModelApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        vehicle_model_name = serializers.CharField(required=True, max_length=255)
+        vehicle_make = serializers.PrimaryKeyRelatedField(queryset=VehicleMake.objects.all())
+
+    class FilterSerializer(serializers.Serializer):
+        vehicle_make = serializers.PrimaryKeyRelatedField(queryset=VehicleMake.objects.all())
+
+    def get(self, request):
+        # Make sure the filters are valid if passed
+        filters_serializer = self.FilterSerializer(data=request.query_params)
+        filters_serializer.is_valid(raise_exception=True)
+
+        vehicle_models = vehicle_model_list(filters=filters_serializer.validated_data)
+
+        data = self.OutputSerializer(vehicle_models, many=True).data
+        return Response(data)

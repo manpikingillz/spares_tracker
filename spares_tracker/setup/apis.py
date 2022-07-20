@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 class CountryListApi(ApiAuthMixin, APIView):
     class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
         country_name = serializers.CharField(required=True)
 
     def get(self, request):

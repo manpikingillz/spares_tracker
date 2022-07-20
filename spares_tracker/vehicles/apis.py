@@ -53,7 +53,7 @@ class VehicleCreateApi(ApiAuthMixin, APIView):
         return Response(status=status.HTTP_201_CREATED)
 
 
-class VehicleUpdateApi(APIView):
+class VehicleUpdateApi(ApiAuthMixin, APIView):
     class InputSerializer(serializers.Serializer):
         MONTH_CHOICES = (
             (1, 'January'),
@@ -99,7 +99,7 @@ class VehicleUpdateApi(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class VehicleListApi(APIView):
+class VehicleListApi(ApiAuthMixin, APIView):
     class OutputSerializer(serializers.Serializer):
         MONTH_CHOICES = (
             (1, 'January'),
@@ -149,7 +149,7 @@ class VehicleListApi(APIView):
         return Response(data)
 
 
-class VehicleDeleteApi(APIView):
+class VehicleDeleteApi(ApiAuthMixin, APIView):
     def post(self, request, vehicle_id):
         vehicle = get_object(Vehicle, pk=vehicle_id)
 

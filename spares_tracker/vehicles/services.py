@@ -71,32 +71,20 @@ def vehicle_create(
 
 @transaction.atomic
 def vehicle_update(*, vehicle: Vehicle, data) -> Vehicle:
-    non_side_effect_fields = [
-        'number_plate',
-        'country_of_registration',
-        'chasis_number',
-        'registration_year',
-        'registration_month',
-        'manufacture_year',
-        'manufacture_month',
-        'vehicle_model',
-        'vehicle_model_code',
-        'engine_size',
-        'exterior_color',
-        'fuel',
-        'transmission',
-        'body_type',
-        'drive_train',
-        'steering',
-        'removed'
-    ]
+    model_fields = list(vars(vehicle).keys())
+
+    if '_state' in model_fields:
+        model_fields.remove('_state')
+
+    if 'id' in model_fields:
+        model_fields.remove('id')
 
     if not vehicle:
         raise ValidationError(VEHICLE_INSTANCE_IS_NONE)
 
     _vehicle, has_updated = model_update(
         instance=vehicle,
-        fields=non_side_effect_fields,
+        fields=model_fields,
         data=data
     )
 

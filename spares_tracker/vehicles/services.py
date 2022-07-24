@@ -70,12 +70,16 @@ def vehicle_create(
 @transaction.atomic
 def vehicle_update(*, vehicle: Vehicle, data) -> Vehicle:
     model_fields = list(vars(vehicle).keys())
+    model_fields.remove('id')
 
-    if '_state' in model_fields:
-        model_fields.remove('_state')
+    for field in model_fields:
+        if field == '_state':
+            model_fields.remove('_state')
 
-    if 'id' in model_fields:
-        model_fields.remove('id')
+        if field.endswith('_id'):
+            modified_field = field[:-3]
+            model_fields.remove(field)
+            model_fields.append(modified_field)
 
     if not vehicle:
         raise ValidationError(VEHICLE_INSTANCE_IS_NONE)

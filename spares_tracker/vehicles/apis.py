@@ -9,6 +9,7 @@ from spares_tracker.vehicles.selectors import vehicle_list, vehicle_make_list,ve
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import get_object
 from spares_tracker.setup.models import Country
+from spares_tracker.files.models import File
 
 
 class VehicleCreateApi(ApiAuthMixin, APIView):
@@ -45,13 +46,17 @@ class VehicleCreateApi(ApiAuthMixin, APIView):
         drive_train = serializers.ChoiceField(choices = Vehicle.DriveTrain.choices ,required=True)
         steering = serializers.ChoiceField(choices = Vehicle.Steering.choices ,required=True)
 
+    class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+
     def post(self, request):
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        vehicle_create(**serializer.validated_data)
+        if created_vehicle := vehicle_create(**serializer.validated_data):
+            data = self.OutputSerializer(created_vehicle).data
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(data, status=status.HTTP_201_CREATED)
 
 
 class VehicleUpdateApi(ApiAuthMixin, APIView):
@@ -87,6 +92,7 @@ class VehicleUpdateApi(ApiAuthMixin, APIView):
         body_type = serializers.ChoiceField(choices = Vehicle.BodyType.choices ,required=False)
         drive_train = serializers.ChoiceField(choices = Vehicle.DriveTrain.choices ,required=False)
         steering = serializers.ChoiceField(choices = Vehicle.Steering.choices ,required=False)
+        vehicle_image = serializers.PrimaryKeyRelatedField(queryset=File.objects.all(), required=False)
 
 
     def post(self, request, vehicle_id):
@@ -135,6 +141,7 @@ class VehicleListApi(ApiAuthMixin, APIView):
         drive_train = serializers.ChoiceField(choices = Vehicle.DriveTrain.choices ,required=True)
         steering = serializers.ChoiceField(choices = Vehicle.Steering.choices ,required=True)
         removed = serializers.BooleanField(required=False)
+        vehicle_image = serializers.PrimaryKeyRelatedField(queryset=File.objects.all())
 
     class FilterSerializer(serializers.Serializer):
         number_plate = serializers.CharField(required=False, max_length=20)

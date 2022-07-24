@@ -11,6 +11,7 @@ from spares_tracker.files.services import (
 )
 
 from spares_tracker.api.mixins import ApiAuthMixin
+from spares_tracker.files.selectors import file_list
 
 
 class FileStandardUploadApi(ApiAuthMixin, APIView):
@@ -67,3 +68,17 @@ class FileDirectUploadFinishApi(ApiAuthMixin, APIView):
         service.finish(file=file)
 
         return Response({"id": file.id})
+
+
+class FileListApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        file_name = serializers.CharField()
+        file_type = serializers.CharField()
+        file = serializers.FileField()
+
+    def get(self, request):
+        files = file_list()
+
+        data = self.OutputSerializer(files, many=True).data
+        return Response(data)

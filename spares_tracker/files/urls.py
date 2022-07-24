@@ -6,6 +6,7 @@ from spares_tracker.files.apis import (
     FileDirectUploadStartApi,
     FileDirectUploadFinishApi,
     FileDirectUploadLocalApi,
+    FileListApi
 )
 
 # Depending on your case, you might want to exclude certain urls, based on the values of
@@ -42,5 +43,6 @@ urlpatterns = [
                 ], "direct"))
             )
         ], "upload"))
-    )
+    ),
+    path('file_list/', FileListApi.as_view(), name='file_list')
 ]

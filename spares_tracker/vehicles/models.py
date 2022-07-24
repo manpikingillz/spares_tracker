@@ -2,13 +2,8 @@ from django.db import models
 from spares_tracker.common.models import BaseModel
 from datetime import date
 from django.db.models import Q
-
-class Country(models.Model):
-    country_name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.country_name
-
+from spares_tracker.setup.models import Country
+from spares_tracker.files.models import File
 
 class VehicleMake(models.Model):
     vehicle_make_name = models.CharField(max_length=255)
@@ -171,6 +166,14 @@ class Vehicle(BaseModel):
         choices=Steering.choices,
         max_length=50,
         default=Steering.UNSPECIFIED
+    )
+
+    vehicle_image = models.ForeignKey(
+        File,
+        related_name='vehicle_images',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
 
     def __str__(self):

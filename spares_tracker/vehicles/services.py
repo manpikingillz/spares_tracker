@@ -2,8 +2,6 @@ from spares_tracker.vehicles.models import Vehicle
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from spares_tracker.common.services import model_update, model_delete
-from collections import OrderedDict
-
 
 
 MANUFACTURE_YEAR_GREATER_THAN_REGISTRATION_YEAR = 'Manufacture year cannot be greater than registration year'
@@ -72,12 +70,16 @@ def vehicle_create(
 @transaction.atomic
 def vehicle_update(*, vehicle: Vehicle, data) -> Vehicle:
     model_fields = list(vars(vehicle).keys())
+    model_fields.remove('id')
 
-    if '_state' in model_fields:
-        model_fields.remove('_state')
+    for field in model_fields:
+        if field == '_state':
+            model_fields.remove('_state')
 
-    if 'id' in model_fields:
-        model_fields.remove('id')
+        if field.endswith('_id'):
+            modified_field = field[:-3]
+            model_fields.remove(field)
+            model_fields.append(modified_field)
 
     if not vehicle:
         raise ValidationError(VEHICLE_INSTANCE_IS_NONE)

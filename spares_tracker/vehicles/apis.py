@@ -3,11 +3,13 @@ from rest_framework import serializers
 from rest_framework import status
 from rest_framework.response import Response
 from spares_tracker.vehicles.models import (
-    Country, VehicleModel, Vehicle)
+    VehicleMake, VehicleModel, Vehicle)
 from spares_tracker.vehicles.services import vehicle_create, vehicle_update, vehicle_delete
-from spares_tracker.vehicles.selectors import vehicle_list
+from spares_tracker.vehicles.selectors import vehicle_list, vehicle_make_list,vehicle_model_list
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import get_object
+from spares_tracker.setup.models import Country
+from spares_tracker.files.models import File
 
 
 class VehicleCreateApi(ApiAuthMixin, APIView):
@@ -44,13 +46,17 @@ class VehicleCreateApi(ApiAuthMixin, APIView):
         drive_train = serializers.ChoiceField(choices = Vehicle.DriveTrain.choices ,required=True)
         steering = serializers.ChoiceField(choices = Vehicle.Steering.choices ,required=True)
 
+    class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+
     def post(self, request):
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        vehicle_create(**serializer.validated_data)
+        if created_vehicle := vehicle_create(**serializer.validated_data):
+            data = self.OutputSerializer(created_vehicle).data
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(data, status=status.HTTP_201_CREATED)
 
 
 class VehicleUpdateApi(ApiAuthMixin, APIView):
@@ -86,6 +92,7 @@ class VehicleUpdateApi(ApiAuthMixin, APIView):
         body_type = serializers.ChoiceField(choices = Vehicle.BodyType.choices ,required=False)
         drive_train = serializers.ChoiceField(choices = Vehicle.DriveTrain.choices ,required=False)
         steering = serializers.ChoiceField(choices = Vehicle.Steering.choices ,required=False)
+        vehicle_image = serializers.PrimaryKeyRelatedField(queryset=File.objects.all(), required=False)
 
 
     def post(self, request, vehicle_id):
@@ -134,6 +141,7 @@ class VehicleListApi(ApiAuthMixin, APIView):
         drive_train = serializers.ChoiceField(choices = Vehicle.DriveTrain.choices ,required=True)
         steering = serializers.ChoiceField(choices = Vehicle.Steering.choices ,required=True)
         removed = serializers.BooleanField(required=False)
+        vehicle_image = serializers.PrimaryKeyRelatedField(queryset=File.objects.all())
 
     class FilterSerializer(serializers.Serializer):
         number_plate = serializers.CharField(required=False, max_length=20)
@@ -156,3 +164,35 @@ class VehicleDeleteApi(ApiAuthMixin, APIView):
         vehicle_delete(vehicle=vehicle)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class VehicleMakeApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        vehicle_make_name = serializers.CharField(required=True, max_length=255)
+
+    def get(self, request):
+        vehicle_makes = vehicle_make_list()
+
+        data = self.OutputSerializer(vehicle_makes, many=True).data
+        return Response(data)
+
+
+class VehicleModelApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        vehicle_model_name = serializers.CharField(required=True, max_length=255)
+        vehicle_make = serializers.PrimaryKeyRelatedField(queryset=VehicleMake.objects.all())
+
+    class FilterSerializer(serializers.Serializer):
+        vehicle_make = serializers.PrimaryKeyRelatedField(queryset=VehicleMake.objects.all())
+
+    def get(self, request):
+        # Make sure the filters are valid if passed
+        filters_serializer = self.FilterSerializer(data=request.query_params)
+        filters_serializer.is_valid(raise_exception=True)
+
+        vehicle_models = vehicle_model_list(filters=filters_serializer.validated_data)
+
+        data = self.OutputSerializer(vehicle_models, many=True).data
+        return Response(data)

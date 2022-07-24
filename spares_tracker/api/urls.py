@@ -7,5 +7,6 @@ urlpatterns = [
     path('users/', include(('spares_tracker.users.urls', 'users'))),
     path('errors/', include(('spares_tracker.errors.urls', 'errors'))),
     path('files/', include(('spares_tracker.files.urls', 'files'))),
-    path('vehicles/', include(('spares_tracker.vehicles.urls', 'vehicles')))
+    path('vehicles/', include(('spares_tracker.vehicles.urls', 'vehicles'))),
+    path('setup/', include(('spares_tracker.setup.urls', 'setup')))
 ]

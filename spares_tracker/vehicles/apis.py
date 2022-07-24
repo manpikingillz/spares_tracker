@@ -10,6 +10,7 @@ from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import get_object
 from spares_tracker.setup.models import Country
 from spares_tracker.files.models import File
+from spares_tracker.api.utils import inline_serializer
 
 
 class VehicleCreateApi(ApiAuthMixin, APIView):
@@ -107,6 +108,12 @@ class VehicleUpdateApi(ApiAuthMixin, APIView):
 
 
 class VehicleListApi(ApiAuthMixin, APIView):
+    class FileOutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        file_name = serializers.CharField()
+        file_type = serializers.CharField()
+        file = serializers.FileField()
+
     class OutputSerializer(serializers.Serializer):
         MONTH_CHOICES = (
             (1, 'January'),
@@ -141,7 +148,9 @@ class VehicleListApi(ApiAuthMixin, APIView):
         drive_train = serializers.ChoiceField(choices = Vehicle.DriveTrain.choices ,required=True)
         steering = serializers.ChoiceField(choices = Vehicle.Steering.choices ,required=True)
         removed = serializers.BooleanField(required=False)
-        vehicle_image = serializers.PrimaryKeyRelatedField(queryset=File.objects.all())
+        vehicle_image = inline_serializer(fields={
+            'file': serializers.FileField()
+        })
 
     class FilterSerializer(serializers.Serializer):
         number_plate = serializers.CharField(required=False, max_length=20)

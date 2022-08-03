@@ -1,6 +1,6 @@
 
 
-from spares_tracker.spares_tracker.suppliers.models import Supplier
+from spares_tracker.suppliers.models import Supplier
 
 
 def supplier_create(

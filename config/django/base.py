@@ -43,6 +43,7 @@ LOCAL_APPS = [
     'spares_tracker.emails.apps.EmailsConfig',
     'spares_tracker.vehicles.apps.VehiclesConfig',
     'spares_tracker.setup.apps.SetupConfig',
+    'spares_tracker.suppliers.apps.SuppliersConfig'
 ]
 
 THIRD_PARTY_APPS = [

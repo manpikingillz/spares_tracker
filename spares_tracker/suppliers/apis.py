@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import serializers
 from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
-from spares_tracker.suppliers.services import supplier_create, supplier_update
+from spares_tracker.suppliers.services import supplier_create, supplier_delete, supplier_update
 from spares_tracker.suppliers.selectors import supplier_list
 from spares_tracker.common.utils import get_object
 from spares_tracker.suppliers.models import Supplier
@@ -63,4 +63,13 @@ class SupplierUpdateApi(ApiAuthMixin, APIView):
         supplier = get_object(Supplier, pk=supplier_id)
 
         supplier_update(supplier=supplier, data=serializer.validated_data)
+        return Response(status=status.HTTP_200_OK)
+
+
+class SupplierDeleteApi(ApiAuthMixin, APIView):
+    def post(self, request, supplier_id):
+        supplier = get_object(Supplier, pk=supplier_id)
+
+        supplier_delete(supplier=supplier)
+
         return Response(status=status.HTTP_200_OK)

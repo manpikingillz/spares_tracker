@@ -3,9 +3,9 @@ from rest_framework.views import APIView
 from rest_framework import serializers
 from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
-from spares_tracker.suppliers.services import supplier_create, supplier_delete, supplier_update
-from spares_tracker.suppliers.selectors import supplier_list
 from spares_tracker.common.utils import get_object
+from spares_tracker.suppliers.services import supplier_create, supplier_delete, supplier_update
+from spares_tracker.suppliers.selectors import supplier_detail, supplier_list
 from spares_tracker.suppliers.models import Supplier
 
 
@@ -46,6 +46,22 @@ class SupplierListApi(ApiAuthMixin, APIView):
         suppliers = supplier_list(filters=filters_serializer.validated_data)
 
         data = self.OutputSerializer(suppliers, many=True).data
+        return Response(data)
+
+
+class SupplierDetailApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        name = serializers.CharField(max_length=255, required=True)
+        email = serializers.EmailField(max_length=255, required=True)
+        phone = serializers.CharField(max_length=30, required=True)
+        address = serializers.CharField(max_length=255, required=True)
+
+    def get(self, request, supplier_id):
+
+        supplier = supplier_detail(pk=supplier_id)
+
+        data = self.OutputSerializer(supplier).data
         return Response(data)
 
 

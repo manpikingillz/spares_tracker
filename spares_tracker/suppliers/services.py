@@ -1,9 +1,10 @@
 from django.db import transaction
 from spares_tracker.suppliers.models import Supplier
 from django.core.exceptions import ValidationError
-from spares_tracker.common.services import model_update
+from spares_tracker.common.services import model_update, model_delete
 
 SUPPLIER_INSTANCE_IS_NONE = f'You attempted updating a {Supplier.__name__} that does not exist!'
+SUPPLIER_INSTANCE_IS_NONE_DELETE = f'You attempted deleting a {Supplier.__name__} that does not exist!'
 
 def supplier_create(
     *,
@@ -49,3 +50,12 @@ def supplier_update(*, supplier: Supplier, data) -> Supplier:
     )
 
     return _supplier
+
+
+@transaction.atomic
+def supplier_delete(*, supplier: Supplier):
+
+    if not supplier:
+        raise ValidationError(SUPPLIER_INSTANCE_IS_NONE_DELETE)
+
+    model_delete(instance=supplier)

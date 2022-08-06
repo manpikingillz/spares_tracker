@@ -14,9 +14,9 @@ class EmployeeCreateApi(ApiAuthMixin, APIView):
             first_name = serializers.CharField(max_length=255, required=True)
             last_name = serializers.CharField(max_length=255, required=True)
             middle_name = serializers.CharField(max_length=255, required=False)
-            gender =  serializers.CharField(choices=Employee.Gender.choices, max_length=6, required=True)
-            email = serializers.EmailField(max_length=255, unique=True, required=True)
-            phone_number = serializers.CharField(max_length=30, unique=True, required=True)
+            gender =  serializers.ChoiceField(choices=Employee.Gender.choices, max_length=6, required=True)
+            email = serializers.EmailField(max_length=255, required=True)
+            phone_number = serializers.CharField(max_length=30, required=True)
             address = serializers.CharField(max_length=255, required=False)
             station =  serializers.PrimaryKeyRelatedField(queryset=Station.objects.all())
 
@@ -36,11 +36,12 @@ class EmployeeListApi(ApiAuthMixin, APIView):
         first_name = serializers.CharField(max_length=255, required=True)
         last_name = serializers.CharField(max_length=255, required=True)
         middle_name = serializers.CharField(max_length=255, required=False)
-        gender =  serializers.CharField(choices=Employee.Gender.choices, max_length=6, required=True)
-        email = serializers.EmailField(max_length=255, unique=True, required=True)
-        phone_number = serializers.CharField(max_length=30, unique=True, required=True)
+        gender =  serializers.ChoiceField(choices=Employee.Gender.choices, max_length=6, required=True)
+        email = serializers.EmailField(max_length=255, required=True)
+        phone_number = serializers.CharField(max_length=30, required=True)
         address = serializers.CharField(max_length=255, required=False)
         station =  serializers.PrimaryKeyRelatedField(queryset=Station.objects.all())
+
 
     class FilterSerializer(serializers.Serializer):
         first_name = serializers.CharField(max_length=255, required=False)
@@ -65,11 +66,12 @@ class EmployeeDetailApi(ApiAuthMixin, APIView):
         first_name = serializers.CharField(max_length=255, required=True)
         last_name = serializers.CharField(max_length=255, required=True)
         middle_name = serializers.CharField(max_length=255, required=False)
-        gender =  serializers.CharField(choices=Employee.Gender.choices, max_length=6, required=True)
-        email = serializers.EmailField(max_length=255, unique=True, required=True)
-        phone_number = serializers.CharField(max_length=30, unique=True, required=True)
+        gender =  serializers.ChoiceField(choices=Employee.Gender.choices, max_length=6, required=True)
+        email = serializers.EmailField(max_length=255, required=True)
+        phone_number = serializers.CharField(max_length=30, required=True)
         address = serializers.CharField(max_length=255, required=False)
         station =  serializers.PrimaryKeyRelatedField(queryset=Station.objects.all())
+
 
     def get(self, request, employee_id):
 
@@ -84,11 +86,12 @@ class EmployeeUpdateApi(ApiAuthMixin, APIView):
         first_name = serializers.CharField(max_length=255, required=False)
         last_name = serializers.CharField(max_length=255, required=False)
         middle_name = serializers.CharField(max_length=255, required=False)
-        gender =  serializers.CharField(choices=Employee.Gender.choices, max_length=6, required=False)
-        email = serializers.EmailField(max_length=255, unique=True, required=False)
-        phone_number = serializers.CharField(max_length=30, unique=True, required=False)
+        gender =  serializers.ChoiceField(choices=Employee.Gender.choices, max_length=6, required=False)
+        email = serializers.EmailField(max_length=255, required=False)
+        phone_number = serializers.CharField(max_length=30, required=False)
         address = serializers.CharField(max_length=255, required=False)
         station =  serializers.PrimaryKeyRelatedField(queryset=Station.objects.all())
+
 
     def post(self, request, employee_id):
         serializer = self.InputSerializer(data=request.data)

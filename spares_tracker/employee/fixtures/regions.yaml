@@ -1,0 +1,199 @@
+- model: employee.region
+  pk: 1
+  fields:
+    name: 'KMP EAST'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 2
+  fields:
+    name: 'KMP NORTH'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 3
+  fields:
+    name: 'KMP SOUTH'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 4
+  fields:
+    name: 'SIIPI'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 5
+  fields:
+    name: 'ASWA'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 6
+  fields:
+    name: 'EAST KYOGA'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 7
+  fields:
+    name: 'ALBERTINE'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 8
+  fields:
+    name: 'BUSOGA NORTH'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 9
+  fields:
+    name: 'ELGON'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 10
+  fields:
+    name: 'KIGEZI'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 11
+  fields:
+    name: 'SAVANNAH'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 12
+  fields:
+    name: 'GREATER MASAKA'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 13
+  fields:
+    name: 'WAMALA'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 14
+  fields:
+    name: 'RWENZORI EAST'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 15
+  fields:
+    name: 'KATONGA'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 16
+  fields:
+    name: 'KIIRA'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 17
+  fields:
+    name: 'NORTH WEST NILE'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 18
+  fields:
+    name: 'BUKEDI'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 19
+  fields:
+    name: 'WEST NILE'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 20
+  fields:
+    name: 'GREATER BUSHENYI'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 21
+  fields:
+    name: 'KIDEPO'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 22
+  fields:
+    name: 'RWENZORI WEST'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 23
+  fields:
+    name: 'RWIZI'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 24
+  fields:
+    name: 'NORTH KYOGA'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False
+
+- model: employee.region
+  pk: 25
+  fields:
+    name: 'MT.MOROTO'
+    created_at: '2022-08-06 01:06:25'
+    updated_at: '2022-08-06 01:06:25'
+    removed: False

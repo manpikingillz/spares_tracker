@@ -90,7 +90,7 @@ class EmployeeUpdateApi(ApiAuthMixin, APIView):
         email = serializers.EmailField(max_length=255, required=False)
         phone_number = serializers.CharField(max_length=30, required=False)
         address = serializers.CharField(max_length=255, required=False)
-        station =  serializers.PrimaryKeyRelatedField(queryset=Station.objects.all())
+        station =  serializers.PrimaryKeyRelatedField(queryset=Station.objects.all(), required=False)
 
 
     def post(self, request, employee_id):

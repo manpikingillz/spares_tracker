@@ -27,9 +27,16 @@ class SparePartCategory(BaseModel):
 
 class SparePart(BaseModel):
     name = models.CharField(max_length=255, unique=True)
-    code = models.CharField(max_length=255)
+    code = models.CharField(max_length=255, unique=True)
     quantity = models.PositiveSmallIntegerField()
     price = models.DecimalField(max_digits=15, decimal_places=2)
+    image = models.ForeignKey(
+        File,
+        related_name='spare_parts',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
     barcode = models.ForeignKey(
         File,
         on_delete=models.SET_NULL,
@@ -49,3 +56,6 @@ class SparePart(BaseModel):
         null=True,
         blank=True
     )
+
+    def __str__(self):
+        return f'{self.name} {self.code}'

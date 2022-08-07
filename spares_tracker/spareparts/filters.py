@@ -6,7 +6,7 @@ from spares_tracker.spareparts.models import SparePart, SparePartCategory
 class BaseSparePartFilter(django_filters.FilterSet):
     class Meta:
         model = SparePart
-        fields = ('name', 'code',)
+        fields = ('name', 'code', 'category')
 
 
 class BaseSparePartCategoryFilter(django_filters.FilterSet):

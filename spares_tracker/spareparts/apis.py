@@ -5,7 +5,7 @@ from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import inline_serializer
 from spares_tracker.spareparts.models import SparePartCategory
-from spares_tracker.spareparts.selectors import sparepart_category_list
+from spares_tracker.spareparts.selectors import sparepart_category_list, sparepart_list
 
 
 
@@ -31,4 +31,32 @@ class SparePartCategoryListApi(ApiAuthMixin, APIView):
         sparepart_categories = sparepart_category_list(filters=filters_serializer.validated_data)
 
         data = self.OutputSerializer(sparepart_categories, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class SparePartListApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        name = serializers.CharField(max_length=255)
+        code = serializers.CharField(max_length=255)
+        quantity = serializers.IntegerField()
+        price = serializers.DecimalField(max_digits=15, decimal_places=2)
+        image = inline_serializer(fields={
+            'file': serializers.FileField()
+        })
+        category = serializers.PrimaryKeyRelatedField(queryset=SparePartCategory.objects.all())
+
+    class FilterSerializer(serializers.Serializer):
+        name = serializers.CharField(max_length=255, required=False)
+        code = serializers.CharField(max_length=255, required=False)
+        category = serializers.PrimaryKeyRelatedField(queryset=SparePartCategory.objects.all())
+
+    def get(self, request):
+        # Make sure the filters are valid
+        filters_serializer = self.FilterSerializer(data=request.query_params)
+        filters_serializer.is_valid(raise_exception=True)
+
+        spareparts = sparepart_list(filters=filters_serializer.validated_data)
+
+        data = self.OutputSerializer(spareparts, many=True).data
         return Response(data, status=status.HTTP_200_OK)

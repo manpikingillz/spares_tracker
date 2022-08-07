@@ -11,8 +11,8 @@ class VehicleAdmin(admin.ModelAdmin):
 
 @admin.register(VehicleMake)
 class VehicleMakeAdmin(admin.ModelAdmin):
-    list_display = ('vehicle_make_name',)
+    list_display = ('vehicle_make_name', 'image')
 
 @admin.register(VehicleModel)
 class VehicleModelAdmin(admin.ModelAdmin):
-    list_display = ('vehicle_model_name',)
+    list_display = ('vehicle_model_name', 'image', 'vehicle_make')

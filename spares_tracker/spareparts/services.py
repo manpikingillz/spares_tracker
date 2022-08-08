@@ -2,6 +2,7 @@ from django.db import transaction
 from spares_tracker.spareparts.models import SparePartCategory, SparePart, SparePartPurchase
 from django.core.exceptions import ValidationError
 from spares_tracker.common.services import model_update, model_delete
+from spares_tracker.common.utils import get_object
 
 SPAREPART_INSTANCE_IS_NONE = f'You attempted updating a {SparePart.__name__} that does not exist!'
 SPAREPART_INSTANCE_IS_NONE_DELETE = f'You attempted deleting a {SparePart.__name__} that does not exist!'
@@ -65,6 +66,7 @@ def sparepart_delete(*, sparepart: SparePart):
 
 
 # Spare Part Purchase - Services
+@transaction.atomic
 def sparepart_purchase_create(
     *,
     spare_part,
@@ -88,4 +90,18 @@ def sparepart_purchase_create(
     sparepart_purchase.full_clean()
     sparepart_purchase.save()
 
+    calculate_new_spare_part_quantity(
+        spare_part=spare_part,
+        added_quantity=quantity
+    )
+
     return sparepart_purchase
+
+def calculate_new_spare_part_quantity(spare_part, added_quantity):
+    sparepart = get_object(SparePart, pk=spare_part.id)
+    new_quantity = sparepart.quantity + added_quantity
+
+    data = {'quantity': new_quantity}
+
+    sparepart_update(sparepart=sparepart, data=data)
+

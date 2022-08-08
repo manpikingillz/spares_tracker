@@ -2,7 +2,9 @@ from django.db import models
 
 from spares_tracker.common.models import BaseModel
 from spares_tracker.files.models import File
+from spares_tracker.employee.models import Employee
 from spares_tracker.vehicles.models import VehicleModel
+from spares_tracker.suppliers.models import Supplier
 
 # Create your models here.
 class SparePartCategory(BaseModel):
@@ -59,3 +61,28 @@ class SparePart(BaseModel):
 
     def __str__(self):
         return f'{self.name} {self.code}'
+
+
+class SparePartPurchase(BaseModel):
+    spare_part = models.ForeignKey(
+        'SparePart',
+        related_name='spare_part_purchases',
+        on_delete=models.CASCADE
+    )
+    order_number = models.CharField(max_length=255, blank=True, null=True)
+    quantity = models.PositiveSmallIntegerField()
+    unit_price = models.DecimalField(max_digits=15, decimal_places=2)
+    amount_paid = models.DecimalField(max_digits=15, decimal_places=2)
+    supplied_by = models.ForeignKey(
+        Supplier,
+        related_name='spare_part_purchases',
+        on_delete=models.CASCADE
+    )
+    received_by = models.ForeignKey(
+        Employee,
+        related_name='spare_part_purchases',
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return f'{self.spare_part.name} - {self.quantity}'

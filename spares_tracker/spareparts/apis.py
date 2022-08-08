@@ -36,7 +36,12 @@ class SparePartCategoryListApi(ApiAuthMixin, APIView):
 
 
 class SparePartListApi(ApiAuthMixin, APIView):
+
     class OutputSerializer(serializers.Serializer):
+        class VehicleModelSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            vehicle_model_name = serializers.CharField(required=True, max_length=255)
+
         id = serializers.IntegerField()
         name = serializers.CharField(max_length=255)
         code = serializers.CharField(max_length=255)
@@ -46,8 +51,8 @@ class SparePartListApi(ApiAuthMixin, APIView):
             'file': serializers.FileField()
         })
         category = serializers.PrimaryKeyRelatedField(queryset=SparePartCategory.objects.all())
-        vehicle_models = serializers.PrimaryKeyRelatedField(queryset=VehicleModel.objects.all(), many=True)
-
+        # vehicle_models = serializers.PrimaryKeyRelatedField(queryset=VehicleModel.objects.all(), many=True)
+        vehicle_models = VehicleModelSerializer(many=True)
     class FilterSerializer(serializers.Serializer):
         name = serializers.CharField(max_length=255, required=False)
         code = serializers.CharField(max_length=255, required=False)

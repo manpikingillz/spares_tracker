@@ -24,7 +24,7 @@ def sparepart_create(
 
     sparepart.full_clean()
     sparepart.save()
-    sparepart.vehicle_models.add(vehicle_models)
+    # sparepart.vehicle_models.add(vehicle_models)
 
     return sparepart
 

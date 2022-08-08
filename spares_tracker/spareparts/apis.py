@@ -112,6 +112,7 @@ class SparePartPurchaseListApi(ApiAuthMixin, APIView):
         amount_paid = serializers.DecimalField(max_digits=15, decimal_places=2, required=True)
         supplied_by = SupplierSerializer()
         received_by = EmployeeSerializer()
+        created_at = serializers.DateTimeField()
 
     class FilterSerializer(serializers.Serializer):
         spare_part = serializers.PrimaryKeyRelatedField(queryset=SparePart.objects.all(), required=False)

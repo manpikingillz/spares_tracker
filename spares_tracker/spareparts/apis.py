@@ -94,14 +94,24 @@ class SparePartPurchaseCreateApi(ApiAuthMixin, APIView):
 
 class SparePartPurchaseListApi(ApiAuthMixin, APIView):
     class OutputSerializer(serializers.Serializer):
+        class SparePartSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            name = serializers.CharField(max_length=255)
+        class SupplierSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            name = serializers.CharField(max_length=255)
+        class EmployeeSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            full_name = serializers.CharField(max_length=255)
+
         id = serializers.IntegerField()
-        spare_part = serializers.PrimaryKeyRelatedField(queryset=SparePart.objects.all(), required=True)
+        spare_part = SparePartSerializer()
         order_number = serializers.CharField(max_length=255, required=False)
         quantity = serializers.IntegerField(required=True)
         unit_price = serializers.DecimalField(max_digits=15, decimal_places=2, required=True)
         amount_paid = serializers.DecimalField(max_digits=15, decimal_places=2, required=True)
-        supplied_by = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all(), required=True)
-        received_by = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
+        supplied_by = SupplierSerializer()
+        received_by = EmployeeSerializer()
 
     class FilterSerializer(serializers.Serializer):
         spare_part = serializers.PrimaryKeyRelatedField(queryset=SparePart.objects.all(), required=False)
@@ -120,14 +130,24 @@ class SparePartPurchaseListApi(ApiAuthMixin, APIView):
 
 class SparePartPurchaseDetailApi(ApiAuthMixin, APIView):
     class OutputSerializer(serializers.Serializer):
+        class SparePartSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            name = serializers.CharField(max_length=255)
+        class SupplierSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            name = serializers.CharField(max_length=255)
+        class EmployeeSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            full_name = serializers.CharField(max_length=255)
+
         id = serializers.IntegerField()
-        spare_part = serializers.PrimaryKeyRelatedField(queryset=SparePart.objects.all(), required=True)
+        spare_part = SparePartSerializer()
         order_number = serializers.CharField(max_length=255, required=False)
         quantity = serializers.IntegerField(required=True)
         unit_price = serializers.DecimalField(max_digits=15, decimal_places=2, required=True)
         amount_paid = serializers.DecimalField(max_digits=15, decimal_places=2, required=True)
-        supplied_by = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all(), required=True)
-        received_by = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
+        supplied_by = SupplierSerializer()
+        received_by = EmployeeSerializer()
 
 
     def get(self, request, sparepart_purchase_id):

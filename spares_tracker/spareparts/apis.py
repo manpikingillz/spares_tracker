@@ -6,6 +6,7 @@ from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import inline_serializer
 from spares_tracker.spareparts.models import SparePartCategory
 from spares_tracker.spareparts.selectors import sparepart_category_list, sparepart_list
+from spares_tracker.vehicles.models import VehicleModel
 
 
 
@@ -45,11 +46,14 @@ class SparePartListApi(ApiAuthMixin, APIView):
             'file': serializers.FileField()
         })
         category = serializers.PrimaryKeyRelatedField(queryset=SparePartCategory.objects.all())
+        vehicle_models = serializers.PrimaryKeyRelatedField(queryset=VehicleModel.objects.all(), many=True)
 
     class FilterSerializer(serializers.Serializer):
         name = serializers.CharField(max_length=255, required=False)
         code = serializers.CharField(max_length=255, required=False)
-        category = serializers.PrimaryKeyRelatedField(queryset=SparePartCategory.objects.all())
+        category = serializers.PrimaryKeyRelatedField(queryset=SparePartCategory.objects.all(), required=False)
+        vehicle_models = serializers.PrimaryKeyRelatedField(queryset=VehicleModel.objects.all(), many=True)
+
 
     def get(self, request):
         # Make sure the filters are valid

@@ -11,4 +11,5 @@ urlpatterns = [
     path('setup/', include(('spares_tracker.setup.urls', 'setup'))),
     path('suppliers/', include(('spares_tracker.suppliers.urls', 'suppliers'))),
     path('employees/', include(('spares_tracker.employee.urls', 'employees'))),
+    path('spareparts/', include(('spares_tracker.spareparts.urls', 'spareparts'))),
 ]

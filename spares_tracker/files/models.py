@@ -34,6 +34,9 @@ class File(BaseModel):
 
     upload_finished_at = models.DateTimeField(blank=True, null=True)
 
+    def __str__(self):
+        return self.original_file_name
+
     @property
     def is_valid(self):
         """

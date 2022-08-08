@@ -45,6 +45,7 @@ LOCAL_APPS = [
     'spares_tracker.setup.apps.SetupConfig',
     'spares_tracker.suppliers.apps.SuppliersConfig',
     'spares_tracker.employee.apps.EmployeeConfig',
+    'spares_tracker.spareparts.apps.SparepartsConfig',
 ]
 
 THIRD_PARTY_APPS = [

@@ -225,6 +225,9 @@ class VehicleMakeApi(ApiAuthMixin, APIView):
     class OutputSerializer(serializers.Serializer):
         id = serializers.IntegerField()
         vehicle_make_name = serializers.CharField(required=True, max_length=255)
+        image = inline_serializer(fields={
+            'file': serializers.FileField()
+        })
 
     def get(self, request):
         vehicle_makes = vehicle_make_list()
@@ -237,6 +240,9 @@ class VehicleModelApi(ApiAuthMixin, APIView):
     class OutputSerializer(serializers.Serializer):
         id = serializers.IntegerField()
         vehicle_model_name = serializers.CharField(required=True, max_length=255)
+        image = inline_serializer(fields={
+            'file': serializers.FileField()
+        })
         vehicle_make = serializers.PrimaryKeyRelatedField(queryset=VehicleMake.objects.all())
 
     class FilterSerializer(serializers.Serializer):

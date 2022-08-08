@@ -7,12 +7,26 @@ from spares_tracker.files.models import File
 
 class VehicleMake(models.Model):
     vehicle_make_name = models.CharField(max_length=255)
+    image = models.ForeignKey(
+        File,
+        related_name="vehicle_makes",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.vehicle_make_name
 
 class VehicleModel(models.Model):
     vehicle_model_name = models.CharField(max_length=255)
+    image = models.ForeignKey(
+        File,
+        related_name="vehicle_modelss",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
     vehicle_make = models.ForeignKey(VehicleMake, related_name='vehicle_models', on_delete=models.CASCADE)
 
     def __str__(self):

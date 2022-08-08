@@ -4,10 +4,10 @@ from rest_framework import serializers
 from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import inline_serializer
-from spares_tracker.spareparts.models import SparePart, SparePartCategory, SparePartPurchase
+from spares_tracker.spareparts.models import SparePart, SparePartCategory
 from spares_tracker.spareparts.selectors import sparepart_category_list, sparepart_list, sparepart_purchase_detail, sparepart_purchase_list
 from spares_tracker.employee.models import Employee
-from spares_tracker.spares_tracker.spareparts.services import sparepart_purchase_create
+from spares_tracker.spareparts.services import sparepart_purchase_create
 from spares_tracker.suppliers.models import Supplier
 from spares_tracker.vehicles.models import VehicleModel
 
@@ -83,18 +83,13 @@ class SparePartPurchaseCreateApi(ApiAuthMixin, APIView):
         supplied_by = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all(), required=True)
         received_by = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
 
-    class FilterSerializer(serializers.Serializer):
-        spare_part = serializers.PrimaryKeyRelatedField(queryset=SparePart.objects.all(), required=False)
-        order_number = serializers.CharField(required=False)
+    def post(self, request):
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-    def get(self, request):
-        # Make sure the filters are valid
-        filters_serializer = self.FilterSerializer(data=request.query_params)
-        filters_serializer.is_valid(raise_exception=True)
+        sparepart_purchases = sparepart_purchase_create(**serializer.validated_data)
 
-        sparepart_purchases = sparepart_purchase_create(filters=filters_serializer.validated_data)
-
-        data = self.InputSerializer(sparepart_purchases, many=True).data
+        data = self.InputSerializer(sparepart_purchases).data
         return Response(data, status=status.HTTP_200_OK)
 
 class SparePartPurchaseListApi(ApiAuthMixin, APIView):

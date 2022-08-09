@@ -9,8 +9,8 @@ def repair_create(
     vehicle,
     problem_description,
     solution_description,
-    spare_parts,
-    problems,
+    spare_parts=None,
+    problems=None,
 ) -> Repair:
     repair = Repair(
         vehicle=vehicle,
@@ -21,11 +21,13 @@ def repair_create(
     repair.full_clean()
     repair.save()
 
-    _spare_parts = spare_parts.split(',')
-    _problems = problems.split(',')
+    if spare_parts:
+        _spare_parts = spare_parts.split(',')
+        repair.spare_parts.add(*_spare_parts)
 
-    repair.spare_parts.add(*_spare_parts)
-    repair.problems.add(*_problems)
+    if problems:
+        _problems = problems.split(',')
+        repair.problems.add(*_problems)
 
     return repair
 

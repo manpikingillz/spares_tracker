@@ -16,8 +16,8 @@ class RepairCreateApi(ApiAuthMixin, APIView):
         vehicle = serializers.PrimaryKeyRelatedField(queryset=Vehicle.objects.all())
         problem_description = serializers.CharField()
         solution_description = serializers.CharField()
-        spare_parts = serializers.CharField()
-        problems = serializers.CharField()
+        spare_parts = serializers.CharField(required=False)
+        problems = serializers.CharField(required=False)
 
     def post(self, request):
 

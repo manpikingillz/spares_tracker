@@ -1,5 +1,6 @@
 from django.db import transaction
 from spares_tracker.repairs.models import Repair
+from spares_tracker.common.utils import get_object
 
 
 #  Repair services.
@@ -21,14 +22,16 @@ def repair_create(
     repair.full_clean()
     repair.save()
 
+    created_repair = get_object(Repair, pk=repair.id)
+
     if spare_parts:
         _spare_parts = spare_parts.split(',')
-        repair.spare_parts.add(*_spare_parts)
+        created_repair.spare_parts.add(*_spare_parts)
 
     if problems:
         _problems = problems.split(',')
-        repair.problems.add(*_problems)
+        created_repair.problems.add(*_problems)
 
-    return repair
+    return created_repair
 
 

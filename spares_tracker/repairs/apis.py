@@ -4,28 +4,29 @@ from rest_framework import serializers
 from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.repairs.selectors import repair_list
+from spares_tracker.spareparts.models import SparePart
+from spares_tracker.repairs.models import RepairProblem
+from spares_tracker.repairs.services import repair_create
 from spares_tracker.vehicles.models import Vehicle
 
 
 # Repair endpoints
-# class SparePartPurchaseCreateApi(ApiAuthMixin, APIView):
-#     class InputSerializer(serializers.Serializer):
-#         spare_part = serializers.PrimaryKeyRelatedField(queryset=SparePart.objects.all(), required=True)
-#         order_number = serializers.CharField(max_length=255, required=False)
-#         quantity = serializers.IntegerField(required=True)
-#         unit_price = serializers.DecimalField(max_digits=15, decimal_places=2, required=True)
-#         amount_paid = serializers.DecimalField(max_digits=15, decimal_places=2, required=True)
-#         supplied_by = serializers.PrimaryKeyRelatedField(queryset=Supplier.objects.all(), required=True)
-#         received_by = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), required=True)
+class RepairCreateApi(ApiAuthMixin, APIView):
+    class InputSerializer(serializers.Serializer):
+        vehicle = serializers.PrimaryKeyRelatedField(queryset=Vehicle.objects.all())
+        problem_description = serializers.CharField()
+        solution_description = serializers.CharField()
+        spare_parts = serializers.CharField()
+        problems = serializers.CharField()
 
-#     def post(self, request):
-#         serializer = self.InputSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
+    def post(self, request):
 
-#         sparepart_purchases = sparepart_purchase_create(**serializer.validated_data)
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-#         data = self.InputSerializer(sparepart_purchases).data
-#         return Response(data, status=status.HTTP_200_OK)
+        repair_create(**serializer.validated_data)
+
+        return Response(status=status.HTTP_201_CREATED)
 
 class RepairListApi(ApiAuthMixin, APIView):
     class OutputSerializer(serializers.Serializer):

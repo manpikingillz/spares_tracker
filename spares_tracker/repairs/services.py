@@ -16,12 +16,16 @@ def repair_create(
         vehicle=vehicle,
         problem_description=problem_description,
         solution_description=solution_description,
-        spare_parts=spare_parts,
-        problems=problems,
     )
 
     repair.full_clean()
     repair.save()
+
+    _spare_parts = spare_parts.split(',')
+    _problems = problems.split(',')
+
+    repair.spare_parts.add(*_spare_parts)
+    repair.problems.add(*_problems)
 
     return repair
 

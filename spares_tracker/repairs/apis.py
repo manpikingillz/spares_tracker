@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import serializers
 from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
-from spares_tracker.repairs.selectors import repair_list
+from spares_tracker.repairs.selectors import repair_list, repair_problem_list
 from spares_tracker.spareparts.models import SparePart
 from spares_tracker.repairs.models import RepairProblem
 from spares_tracker.repairs.services import repair_create
@@ -59,6 +59,25 @@ class RepairListApi(ApiAuthMixin, APIView):
         filters_serializer.is_valid(raise_exception=True)
 
         repairs = repair_list(filters=filters_serializer.validated_data)
+
+        data = self.OutputSerializer(repairs, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class RepairProblemListApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+
+        id = serializers.IntegerField()
+        name = serializers.CharField()
+
+    class FilterSerializer(serializers.Serializer):
+        name = serializers.CharField(required=False)
+
+    def get(self, request):
+        filters_serializer = self.FilterSerializer(data=request.query_params)
+        filters_serializer.is_valid(raise_exception=True)
+
+        repairs = repair_problem_list(filters=filters_serializer.validated_data)
 
         data = self.OutputSerializer(repairs, many=True).data
         return Response(data, status=status.HTTP_200_OK)

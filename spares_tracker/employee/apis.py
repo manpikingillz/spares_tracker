@@ -5,7 +5,7 @@ from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import get_object
 from spares_tracker.employee.services import employee_create, employee_update, employee_delete
-from spares_tracker.employee.selectors import employee_detail, employee_list
+from spares_tracker.employee.selectors import employee_detail, employee_list, station_list
 from spares_tracker.employee.models import Employee, Station
 
 
@@ -112,3 +112,32 @@ class EmployeeDeleteApi(ApiAuthMixin, APIView):
         employee_delete(employee=employee)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class StationListApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        class DivisionSerializer(serializers.Serializer):
+            class RegionSerializer(serializers.Serializer):
+                id = serializers.IntegerField()
+                name = serializers.CharField(max_length=255)
+
+            id = serializers.IntegerField()
+            name = serializers.CharField(max_length=255)
+            region = RegionSerializer()
+
+        id = serializers.IntegerField()
+        name = serializers.CharField(max_length=255)
+        division = DivisionSerializer()
+
+    class FilterSerializer(serializers.Serializer):
+        name = serializers.CharField(max_length=255, required=False)
+
+    def get(self, request):
+        # Make sure the filters are valid
+        filters_serializer = self.FilterSerializer(data=request.query_params)
+        filters_serializer.is_valid(raise_exception=True)
+
+        stations = station_list(filters=filters_serializer.validated_data)
+
+        data = self.OutputSerializer(stations, many=True).data
+        return Response(data)

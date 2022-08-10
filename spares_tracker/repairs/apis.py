@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import serializers
 from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
-from spares_tracker.repairs.selectors import repair_list, repair_problem_list
+from spares_tracker.repairs.selectors import repair_detail, repair_list, repair_problem_list
 from spares_tracker.spareparts.models import SparePart
 from spares_tracker.repairs.models import RepairProblem
 from spares_tracker.repairs.services import repair_create
@@ -61,6 +61,36 @@ class RepairListApi(ApiAuthMixin, APIView):
         repairs = repair_list(filters=filters_serializer.validated_data)
 
         data = self.OutputSerializer(repairs, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
+
+class RepairDetailApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        class VehicleSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            number_plate = serializers.CharField(max_length=20)
+        class SparePartSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            name = serializers.CharField(max_length=255)
+            code = serializers.CharField(max_length=255)
+        class RepairProblemSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            name = serializers.CharField(max_length=255)
+            description = serializers.CharField()
+
+        id = serializers.IntegerField()
+        vehicle = VehicleSerializer()
+        problem_description = serializers.CharField()
+        solution_description = serializers.CharField()
+        spare_parts = SparePartSerializer(many=True)
+        problems = RepairProblemSerializer(many=True)
+        created_at = serializers.DateTimeField()
+
+
+    def get(self, request, repair_id):
+
+        repair = repair_detail(pk=repair_id)
+
+        data = self.OutputSerializer(repair,).data
         return Response(data, status=status.HTTP_200_OK)
 
 

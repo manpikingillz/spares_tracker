@@ -13,6 +13,8 @@ class BaseUserAdmin(admin.ModelAdmin):
 
     list_filter = ('is_active', 'is_admin', 'is_superuser')
 
+    filter_horizontal = ('groups', 'user_permissions',)
+
     fieldsets = (
         (
             None, {
@@ -22,6 +24,11 @@ class BaseUserAdmin(admin.ModelAdmin):
         (
             "Booleans", {
                 "fields": ("is_active", "is_admin", "is_superuser")
+            }
+        ),
+        (
+            "Groups and Permissions", {
+                "fields": ('groups', 'user_permissions',)
             }
         ),
         (

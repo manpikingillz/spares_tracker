@@ -59,6 +59,10 @@ class SparePart(BaseModel):
         blank=True
     )
 
+    class Meta:
+        permissions = (("view_dashboard", "Can view dashboard"), ("view_setup", "Can view setup"))
+
+
     def __str__(self):
         return f'{self.name} {self.code}'
 

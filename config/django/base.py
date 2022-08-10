@@ -181,6 +181,8 @@ APP_DOMAIN = env("APP_DOMAIN", default="http://localhost:8000")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+ADMIN_SITE_HEADER = "Spares Tracker"
+
 from config.settings.cors import *  # noqa
 from config.settings.jwt import *  # noqa
 from config.settings.sessions import *  # noqa

@@ -113,8 +113,20 @@ class VehicleListApi(ApiAuthMixin, APIView):
         file_name = serializers.CharField()
         file_type = serializers.CharField()
         file = serializers.FileField()
-
     class OutputSerializer(serializers.Serializer):
+        class CountrySerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            country_name = serializers.CharField(max_length=255)
+        
+        class VehicleModelSerializer(serializers.Serializer):
+            class VehicleMakeSerializer(serializers.Serializer):
+                id = serializers.IntegerField()
+                vehicle_make_name = serializers.CharField(max_length=255)
+    
+            id = serializers.IntegerField()
+            vehicle_model_name = serializers.CharField(max_length=255)
+            vehicle_make = VehicleMakeSerializer()
+
         MONTH_CHOICES = (
             (1, 'January'),
             (2, 'February'),
@@ -132,13 +144,13 @@ class VehicleListApi(ApiAuthMixin, APIView):
 
         id = serializers.IntegerField()
         number_plate = serializers.CharField(required=True, max_length=20)
-        country_of_registration = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all())
+        country_of_registration = CountrySerializer()
         chasis_number = serializers.CharField(required=True, max_length=255)
         registration_year = serializers.IntegerField(required=True)
         registration_month = serializers.ChoiceField(choices=MONTH_CHOICES, required=True)
         manufacture_year = serializers.IntegerField(required=True)
         manufacture_month = serializers.ChoiceField(choices=MONTH_CHOICES, required=True)
-        vehicle_model = serializers.PrimaryKeyRelatedField(queryset=VehicleModel.objects.all())
+        vehicle_model = VehicleModelSerializer()
         vehicle_model_code = serializers.CharField(required=True, max_length=255)
         engine_size = serializers.IntegerField(required=True)
         exterior_color = serializers.ChoiceField(choices=Vehicle.Color.choices, required=True)

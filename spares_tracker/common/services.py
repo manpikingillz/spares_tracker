@@ -1,7 +1,7 @@
 from typing import List, Dict, Any, Tuple
 
 from spares_tracker.common.types import DjangoModelType
-
+from django.core.exceptions import ValidationError
 
 def model_update(
     *,
@@ -46,3 +46,18 @@ def model_update(
         instance.save(update_fields=fields)
 
     return instance, has_updated
+
+
+def model_delete(
+    *,
+    instance: DjangoModelType,
+) -> None:
+
+    data = {'removed': True}
+    fields = ['removed', ]
+
+    model_update(
+        instance=instance,
+        fields=fields,
+        data=data
+    )

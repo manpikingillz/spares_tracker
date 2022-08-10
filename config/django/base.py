@@ -41,6 +41,12 @@ LOCAL_APPS = [
     'spares_tracker.integrations.apps.IntegrationsConfig',
     'spares_tracker.files.apps.FilesConfig',
     'spares_tracker.emails.apps.EmailsConfig',
+    'spares_tracker.vehicles.apps.VehiclesConfig',
+    'spares_tracker.setup.apps.SetupConfig',
+    'spares_tracker.suppliers.apps.SuppliersConfig',
+    'spares_tracker.employee.apps.EmployeeConfig',
+    'spares_tracker.spareparts.apps.SparepartsConfig',
+    'spares_tracker.repairs.apps.RepairsConfig'
 ]
 
 THIRD_PARTY_APPS = [
@@ -163,8 +169,8 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'spares_tracker.api.exception_handlers.drf_default_with_modifications_exception_handler',
-    # 'EXCEPTION_HANDLER': 'spares_tracker.api.exception_handlers.hacksoft_proposed_exception_handler',
+    # 'EXCEPTION_HANDLER': 'spares_tracker.api.exception_handlers.drf_default_with_modifications_exception_handler',
+    'EXCEPTION_HANDLER': 'spares_tracker.api.exception_handlers.hacksoft_proposed_exception_handler',
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),

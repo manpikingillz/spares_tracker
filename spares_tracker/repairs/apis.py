@@ -7,6 +7,8 @@ from spares_tracker.repairs.selectors import repair_detail, repair_list, repair_
 from spares_tracker.spareparts.models import SparePart
 from spares_tracker.repairs.models import RepairProblem
 from spares_tracker.repairs.services import repair_create
+from spares_tracker.common.utils import get_object
+from spares_tracker.users.models import BaseUser
 from spares_tracker.vehicles.models import Vehicle
 
 
@@ -20,11 +22,12 @@ class RepairCreateApi(ApiAuthMixin, APIView):
         problems = serializers.CharField(required=False)
 
     def post(self, request):
+        user = get_object(BaseUser, pk=request.user.id)
 
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        repair_create(**serializer.validated_data)
+        repair_create(**serializer.validated_data, user=user)
 
         return Response(status=status.HTTP_201_CREATED)
 

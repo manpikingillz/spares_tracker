@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from spares_tracker.repairs.models import Repair, RepairComment, RepairProblem
+from spares_tracker.repairs.models import Repair, RepairComment, RepairProblem, RepairProblemRecommendation, RepairSparePartRecommendation
 
 @admin.register(Repair)
 class RepairAdmin(admin.ModelAdmin):
@@ -13,3 +13,11 @@ class RepairProblemAdmin(admin.ModelAdmin):
 @admin.register(RepairComment)
 class RepairCommentAdmin(admin.ModelAdmin):
     list_display = ('repair', 'employee', 'comment')
+
+@admin.register(RepairProblemRecommendation)
+class RepairProblemRecommendationAdmin(admin.ModelAdmin):
+    list_display = ('repair', 'problem', 'added_by')
+
+@admin.register(RepairSparePartRecommendation)
+class RepairSparePartRecommendationAdmin(admin.ModelAdmin):
+    list_display = ('repair', 'sparepart', 'added_by')

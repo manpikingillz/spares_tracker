@@ -5,7 +5,7 @@ from spares_tracker.employee.models import Division, Employee, Region, Station
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'middle_name', 'gender', 'email', 'phone_number', 'address', 'station')
+    list_display = ('first_name', 'last_name', 'middle_name', 'gender', 'email', 'phone_number', 'address', 'station', 'section', 'user')
 
 
 @admin.register(Station)

@@ -2,10 +2,18 @@ from django.db import models
 
 from spares_tracker.common.models import BaseModel
 from spares_tracker.spareparts.models import SparePart
+from spares_tracker.employee.models import Employee, Section
 from spares_tracker.vehicles.models import Vehicle
 
 # Create your models here.
 class Repair(BaseModel):
+    class Status(models.TextChoices):
+        RECEIVED = 'RECEIVED', 'Received'
+        FOR_REVIEW = 'FOR_REVIEW', 'For Review'
+        FOR_DIRECTOR_APPROVAL = 'FOR_DIRECTOR_APPROVAL', 'For Director Approval'
+        FOR_REPAIR = 'FOR_REPAIR', 'For Repair'
+        FOR_PICKING = 'FOR_PICKING', 'For Picking'
+
     vehicle = models.ForeignKey(
         Vehicle,
         related_name='repairs',
@@ -25,6 +33,18 @@ class Repair(BaseModel):
         null=True,
         blank=True
     )
+    status = models.CharField(
+        choices=Status.choices,
+        max_length=255,
+        default=Status.RECEIVED,
+        null=True, blank=True
+    )
+    section = models.ForeignKey(
+        Section,
+        related_name='repairs',
+        on_delete=models.CASCADE,
+        null=True, blank=True
+    )
 
     def __str__(self):
         return f'{self.vehicle.number_plate} - {self.problem_description}'
@@ -35,3 +55,9 @@ class RepairProblem(BaseModel):
 
     def __Str__(self):
         return self.name
+
+
+class RepairComment(BaseModel):
+    repair = models.ForeignKey(Repair, related_name='repair_comments', on_delete=models.CASCADE, null=True, blank=True),
+    employee = models.ForeignKey(Employee, related_name='repair_comments', on_delete=models.CASCADE, null=True, blank=True),
+    comment = models.TextField()

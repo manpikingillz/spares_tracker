@@ -1,6 +1,7 @@
 from django.db import models
 
 from spares_tracker.common.models import BaseModel
+from spares_tracker.users.models import BaseUser
 
 
 class Region(BaseModel):
@@ -24,6 +25,12 @@ class Station(BaseModel):
     def __str__(self) -> str:
         return self.name
 
+class Section(BaseModel):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self) -> str:
+        return self.name
+
 
 class Employee(BaseModel):
     class Gender(models.TextChoices):
@@ -38,6 +45,8 @@ class Employee(BaseModel):
     phone_number = models.CharField(max_length=30, unique=True)
     address = models.CharField(max_length=255, null=True, blank=True)
     station =  models.ForeignKey(Station, related_name='employees', on_delete=models.CASCADE)
+    section = models.ForeignKey(Section, related_name='employees', on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(BaseUser, related_name='employee', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self) -> str:
         return f'{self.first_name} {self.middle_name or " "} {self.last_name}'

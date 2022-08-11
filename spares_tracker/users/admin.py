@@ -45,6 +45,10 @@ class BaseUserAdmin(admin.ModelAdmin):
             return super().save_model(request, obj, form, change)
 
         try:
-            user_create(**form.cleaned_data)
+            user_info = form.cleaned_data
+            del user_info['groups']
+            del user_info['user_permissions']
+            del user_info['is_superuser']
+            user_create(**user_info)
         except ValidationError as exc:
             self.message_user(request, str(exc), messages.ERROR)

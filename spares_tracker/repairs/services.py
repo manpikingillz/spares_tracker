@@ -60,21 +60,24 @@ def repair_problem_recommendation_create(problems, user, created_repair):
 
 def repair_sparepart_recommendation_update(repair, spareparts, added_by):
     if spareparts:
+        RepairSparePartRecommendation.objects.filter(repair=repair).delete()
         for spare_part_id in spareparts.split(','):
+            print(f'doing it for: {spare_part_id}')
             spare_part_obj = get_object(SparePart, pk=spare_part_id)
 
-            sparepart_recomm = RepairSparePartRecommendation.objects.filter(
+            # sparepart_recomm = RepairSparePartRecommendation.objects.filter(
+            #     repair=repair,
+            #     sparepart=spare_part_obj
+            # )
+
+            # if not sparepart_recomm:
+            repair_sparepart_recommendation = RepairSparePartRecommendation(
                 repair=repair,
-                sparepart=spare_part_obj
+                sparepart=spare_part_obj,
+                added_by=added_by
             )
-            if not sparepart_recomm:
-                repair_sparepart_recommendation = RepairSparePartRecommendation(
-                    repair=repair,
-                    sparepart=spare_part_obj,
-                    added_by=added_by
-                )
-                repair_sparepart_recommendation.full_clean()
-                repair_sparepart_recommendation.save()
+            repair_sparepart_recommendation.full_clean()
+            repair_sparepart_recommendation.save()
 
 def repair_problem_recommendation_update(repair, problems, added_by):
     if problems:

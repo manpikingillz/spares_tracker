@@ -12,22 +12,17 @@ class RepairProblemRecommendation(BaseModel):
     repair = models.ForeignKey(
         'Repair',
         related_name='repair_problem_recommendations',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        on_delete=models.CASCADE
     )
     problem = models.ForeignKey(
         'RepairProblem',
         related_name='repair_problem_recommendations',
         on_delete=models.CASCADE,
-        null=True,
-        blank=True)
+    )
     added_by = models.ForeignKey(
         BaseUser,
         related_name='repair_problem_recommendations',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        on_delete=models.CASCADE
     )
 
     class Meta:
@@ -42,23 +37,17 @@ class RepairSparePartRecommendation(BaseModel):
     repair = models.ForeignKey(
         'Repair',
         related_name='repair_sparepart_recommendations',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        on_delete=models.CASCADE
     )
     sparepart = models.ForeignKey(
         SparePart,
         related_name='repair_sparepart_recommendations',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        on_delete=models.CASCADE
     )
     added_by = models.ForeignKey(
         BaseUser,
         related_name='repair_sparepart_recommendations',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        on_delete=models.CASCADE
     )
 
     class Meta:

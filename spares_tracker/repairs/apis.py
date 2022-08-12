@@ -6,7 +6,7 @@ from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.repairs.selectors import repair_detail, repair_list, repair_problem_list, repair_problem_recommendation_list, repair_sparepart_recommendation_list
 from spares_tracker.spareparts.models import SparePart
 from spares_tracker.repairs.models import Repair, RepairProblem
-from spares_tracker.repairs.services import repair_create
+from spares_tracker.repairs.services import repair_create, repair_problem_recommendation_update, repair_sparepart_recommendation_update, repair_update
 from spares_tracker.common.utils import get_object
 from spares_tracker.users.models import BaseUser
 from spares_tracker.vehicles.models import Vehicle
@@ -52,6 +52,7 @@ class RepairListApi(ApiAuthMixin, APIView):
         spare_parts = SparePartSerializer(many=True)
         problems = RepairProblemSerializer(many=True)
         created_at = serializers.DateTimeField()
+        status = serializers.CharField(max_length=255)
 
     class FilterSerializer(serializers.Serializer):
         vehicle = serializers.PrimaryKeyRelatedField(queryset=Vehicle.objects.all(), required=False)
@@ -87,6 +88,7 @@ class RepairDetailApi(ApiAuthMixin, APIView):
         spare_parts = SparePartSerializer(many=True)
         problems = RepairProblemSerializer(many=True)
         created_at = serializers.DateTimeField()
+        status = serializers.CharField(max_length=255)
 
 
     def get(self, request, repair_id):
@@ -95,6 +97,19 @@ class RepairDetailApi(ApiAuthMixin, APIView):
 
         data = self.OutputSerializer(repair,).data
         return Response(data, status=status.HTTP_200_OK)
+
+class RepairUpdateApi(ApiAuthMixin, APIView):
+    class InputSerializer(serializers.Serializer):
+        status = serializers.ChoiceField(choices=Repair.Status.choices, required=False)
+
+    def post(self, request, repair_id):
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        repair = get_object(Repair, pk=repair_id)
+        print(f'serializer.validated_data: {serializer.validated_data}')
+        repair_update(repair=repair, data=serializer.validated_data)
+        return Response(status=status.HTTP_200_OK)
 
 
 class RepairProblemListApi(ApiAuthMixin, APIView):
@@ -184,3 +199,29 @@ class RepairSparePartRecommendationListApi(ApiAuthMixin, APIView):
 
         data = self.OutputSerializer(spareparts, many=True).data
         return Response(data, status=status.HTTP_200_OK)
+
+class RepairSparePartRecommendationUpdateApi(ApiAuthMixin, APIView):
+    class InputSerializer(serializers.Serializer):
+        repair = serializers.PrimaryKeyRelatedField(queryset=Repair.objects.all(), required=True)
+        spareparts = serializers.CharField()
+
+    def post(self, request):
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        repair_sparepart_recommendation_update(**serializer.validated_data, added_by=request.user)
+
+        return Response(status=status.HTTP_200_OK)
+
+class RepairProblemRecommendationUpdateApi(ApiAuthMixin, APIView):
+    class InputSerializer(serializers.Serializer):
+        repair = serializers.PrimaryKeyRelatedField(queryset=Repair.objects.all(), required=True)
+        problems = serializers.CharField()
+
+    def post(self, request):
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        repair_problem_recommendation_update(**serializer.validated_data, added_by=request.user)
+
+        return Response(status=status.HTTP_200_OK)

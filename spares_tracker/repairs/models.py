@@ -30,6 +30,14 @@ class RepairProblemRecommendation(BaseModel):
         blank=True
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['repair', 'problem'],
+                name='repair_problem_unique_together'
+            )
+        ]
+
 class RepairSparePartRecommendation(BaseModel):
     repair = models.ForeignKey(
         'Repair',
@@ -52,6 +60,14 @@ class RepairSparePartRecommendation(BaseModel):
         null=True,
         blank=True
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['repair', 'sparepart'],
+                name='repair_sparepart_unique_together'
+            )
+        ]
 
 class Repair(BaseModel):
     class Status(models.TextChoices):

@@ -11,7 +11,8 @@ def user_get_login_data(*, user: BaseUser):
         'is_active': user.is_active,
         'is_admin': user.is_admin,
         'is_superuser': user.is_superuser,
-        'permissions': user.get_all_permissions()
+        'permissions': user.get_all_permissions(),
+        'employee': user.employee.full_name
     }
 
 

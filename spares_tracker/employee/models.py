@@ -53,4 +53,4 @@ class Employee(BaseModel):
 
     @property
     def full_name(self) -> str:
-        return f'{self.first_name} {self.middle_name or " "} {self.last_name}'
+        return f'{self.first_name} {self.middle_name or ""} {self.last_name}'

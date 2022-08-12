@@ -74,21 +74,17 @@ def repair_sparepart_recommendation_update(repair, spareparts, added_by):
 
 def repair_problem_recommendation_update(repair, problems, added_by):
     if problems:
+        RepairProblemRecommendation.objects.filter(repair=repair).delete()
         for problem_id in problems.split(','):
             repair_problem = get_object(RepairProblem, pk=problem_id)
 
-            problem_recomm = RepairProblemRecommendation.objects.filter(
+            repair_problem_recommendation = RepairProblemRecommendation(
                 repair=repair,
-                problem=repair_problem
+                problem=repair_problem,
+                added_by=added_by
             )
-            if not problem_recomm:
-                repair_problem_recommendation = RepairProblemRecommendation(
-                    repair=repair,
-                    problem=repair_problem,
-                    added_by=added_by
-                )
-                repair_problem_recommendation.full_clean()
-                repair_problem_recommendation.save()
+            repair_problem_recommendation.full_clean()
+            repair_problem_recommendation.save()
 
 @transaction.atomic
 def repair_update(*, repair: Repair, data):

@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import serializers
 from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
-from spares_tracker.repairs.selectors import repair_detail, repair_list, repair_problem_list, repair_problem_recommendation_list
+from spares_tracker.repairs.selectors import repair_detail, repair_list, repair_problem_list, repair_problem_recommendation_list, repair_sparepart_recommendation_list
 from spares_tracker.spareparts.models import SparePart
 from spares_tracker.repairs.models import Repair, RepairProblem
 from spares_tracker.repairs.services import repair_create
@@ -148,4 +148,39 @@ class RepairProblemRecommendationListApi(ApiAuthMixin, APIView):
         problems = repair_problem_recommendation_list(filters=filters_serializer.validated_data)
 
         data = self.OutputSerializer(problems, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class RepairSparePartRecommendationListApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        class SpartPartSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            name = serializers.CharField(max_length=255)
+        class BaseUserSerializer(serializers.Serializer):
+            class EmployeeSerializer(serializers.Serializer):
+                id = serializers.IntegerField()
+                full_name = serializers.CharField(max_length=255, required=False)
+                first_name = serializers.CharField(max_length=255, required=False)
+                last_name = serializers.CharField(max_length=255, required=False)
+
+            email = serializers.EmailField(max_length=255)
+            employee = EmployeeSerializer()
+
+        id = serializers.IntegerField()
+        repair = serializers.PrimaryKeyRelatedField(queryset=Repair.objects.all(), required=False)
+        sparepart = SpartPartSerializer()
+        added_by = BaseUserSerializer()
+
+    class FilterSerializer(serializers.Serializer):
+        repair = serializers.PrimaryKeyRelatedField(queryset=Repair.objects.all(), required=False)
+        sparepart = serializers.PrimaryKeyRelatedField(queryset=SparePart.objects.all(), required=False)
+        added_by = serializers.PrimaryKeyRelatedField(queryset=BaseUser.objects.all(), required=False)
+
+    def get(self, request):
+        filters_serializer = self.FilterSerializer(data=request.query_params)
+        filters_serializer.is_valid(raise_exception=True)
+
+        spareparts = repair_sparepart_recommendation_list(filters=filters_serializer.validated_data)
+
+        data = self.OutputSerializer(spareparts, many=True).data
         return Response(data, status=status.HTTP_200_OK)

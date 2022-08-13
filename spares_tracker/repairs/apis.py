@@ -171,6 +171,7 @@ class RepairSparePartRecommendationListApi(ApiAuthMixin, APIView):
         class SpartPartSerializer(serializers.Serializer):
             id = serializers.IntegerField()
             name = serializers.CharField(max_length=255)
+            quantity = serializers.IntegerField()
         class BaseUserSerializer(serializers.Serializer):
             class EmployeeSerializer(serializers.Serializer):
                 id = serializers.IntegerField()

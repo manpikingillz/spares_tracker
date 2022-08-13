@@ -61,3 +61,11 @@ def model_delete(
         fields=fields,
         data=data
     )
+
+def multiple_delete(cls, filters) -> None:
+    pass
+    #TODO: implement
+
+def multiple_update(cls, filters) -> None:
+    pass
+    #TODO: implement

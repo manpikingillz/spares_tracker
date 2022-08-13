@@ -5,7 +5,7 @@ from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.repairs.selectors import repair_detail, repair_list, repair_problem_list, repair_problem_recommendation_list, repair_sparepart_recommendation_list
 from spares_tracker.spareparts.models import SparePart
-from spares_tracker.repairs.models import Repair, RepairProblem
+from spares_tracker.repairs.models import Repair, RepairProblem, RepairProblemRecommendation, RepairSparePartRecommendation
 from spares_tracker.repairs.services import repair_create, repair_problem_recommendation_update, repair_sparepart_recommendation_update, repair_update
 from spares_tracker.common.utils import get_object
 from spares_tracker.users.models import BaseUser
@@ -206,10 +206,16 @@ class RepairSparePartRecommendationUpdateApi(ApiAuthMixin, APIView):
         spareparts = serializers.CharField()
 
     def post(self, request):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not request.data.get('spareparts'):
+            repair_id = request.data.get('repair', None)
+            if repair_id is not None:
+                #TODO: Refactor to put it in service
+                RepairSparePartRecommendation.objects.filter(repair_id=int(repair_id)).delete()
+        else:
+            serializer = self.InputSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-        repair_sparepart_recommendation_update(**serializer.validated_data, added_by=request.user)
+            repair_sparepart_recommendation_update(**serializer.validated_data, added_by=request.user)
 
         return Response(status=status.HTTP_200_OK)
 
@@ -219,9 +225,15 @@ class RepairProblemRecommendationUpdateApi(ApiAuthMixin, APIView):
         problems = serializers.CharField()
 
     def post(self, request):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not request.data.get('problems'):
+            repair_id = request.data.get('repair', None)
+            if repair_id is not None:
+                #TODO: Refactor to put it in service
+                RepairProblemRecommendation.objects.filter(repair_id=int(repair_id)).delete()
+        else:
+            serializer = self.InputSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-        repair_problem_recommendation_update(**serializer.validated_data, added_by=request.user)
+            repair_problem_recommendation_update(**serializer.validated_data, added_by=request.user)
 
         return Response(status=status.HTTP_200_OK)

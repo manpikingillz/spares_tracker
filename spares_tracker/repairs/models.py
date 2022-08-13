@@ -106,6 +106,13 @@ class Repair(BaseModel):
         null=True,
         blank=True
     )
+    forwarded_by = models.ForeignKey(
+        BaseUser,
+        related_name='forwarded_repairs',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f'{self.vehicle.number_plate} - {self.problem_description}'
@@ -120,6 +127,6 @@ class RepairProblem(BaseModel):
 
 
 class RepairComment(BaseModel):
-    repair = models.ForeignKey(Repair, related_name='repair_comments', on_delete=models.CASCADE, null=True, blank=True),
-    employee = models.ForeignKey(Employee, related_name='repair_comments', on_delete=models.CASCADE, null=True, blank=True),
+    repair = models.ForeignKey(Repair, related_name='repair_comments', on_delete=models.CASCADE, null=True, blank=True)
     comment = models.TextField()
+    commented_by = models.ForeignKey(BaseUser, related_name='repair_comments', on_delete=models.CASCADE, null=True, blank=True)

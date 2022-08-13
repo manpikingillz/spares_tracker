@@ -12,7 +12,7 @@ class RepairProblemAdmin(admin.ModelAdmin):
 
 @admin.register(RepairComment)
 class RepairCommentAdmin(admin.ModelAdmin):
-    list_display = ('repair', 'employee', 'comment')
+    list_display = ('repair', 'comment', 'commented_by')
 
 @admin.register(RepairProblemRecommendation)
 class RepairProblemRecommendationAdmin(admin.ModelAdmin):

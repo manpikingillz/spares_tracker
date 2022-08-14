@@ -27,6 +27,7 @@ class Station(BaseModel):
 
 class Section(BaseModel):
     name = models.CharField(max_length=255, unique=True)
+    start_of_repair_process = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.name

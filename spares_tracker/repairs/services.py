@@ -4,6 +4,7 @@ from spares_tracker.repairs.models import Repair, RepairComment, RepairProblem, 
 from spares_tracker.common.utils import get_object
 from spares_tracker.spareparts.models import SparePart
 from spares_tracker.common.services import model_update
+from spares_tracker.employee.models import Section
 
 REPAIR_INSTANCE_IS_NONE = f'You attempted updating a {Repair.__name__} that does not exist!'
 
@@ -24,6 +25,12 @@ def repair_create(
         solution_description=solution_description,
     )
 
+    # section that will be start of the repair process. e.g If reception section receives the repair,
+    # then we will be setting that here, but dynamically.
+    section = Section.objects.filter(start_of_repair_process=True).first()
+    if section:
+        repair.section = section
+
     repair.full_clean()
     repair.save()
 
@@ -31,6 +38,7 @@ def repair_create(
 
     repair_sparepart_recommendation_create(spare_parts, user, created_repair)
     repair_problem_recommendation_create(problems, user, created_repair)
+
 
     return created_repair
 

@@ -24,4 +24,4 @@ class RegionAdmin(admin.ModelAdmin):
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', 'start_of_repair_process')

@@ -84,6 +84,8 @@ class RepairDetailApi(ApiAuthMixin, APIView):
             id = serializers.IntegerField()
             name = serializers.CharField(max_length=255)
             description = serializers.CharField()
+        class SectionSerializer(serializers.Serializer):
+            name = serializers.CharField()
 
         id = serializers.IntegerField()
         vehicle = VehicleSerializer()
@@ -93,6 +95,7 @@ class RepairDetailApi(ApiAuthMixin, APIView):
         problems = RepairProblemSerializer(many=True)
         created_at = serializers.DateTimeField()
         status = serializers.CharField(max_length=255)
+        section = SectionSerializer()
 
 
     def get(self, request, repair_id):

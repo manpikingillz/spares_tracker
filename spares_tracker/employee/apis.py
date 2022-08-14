@@ -5,7 +5,7 @@ from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import get_object
 from spares_tracker.employee.services import employee_create, employee_update, employee_delete
-from spares_tracker.employee.selectors import employee_detail, employee_list, station_list
+from spares_tracker.employee.selectors import employee_detail, employee_list, section_list, station_list
 from spares_tracker.employee.models import Employee, Section, Station
 
 
@@ -156,4 +156,21 @@ class StationListApi(ApiAuthMixin, APIView):
         stations = station_list(filters=filters_serializer.validated_data)
 
         data = self.OutputSerializer(stations, many=True).data
+        return Response(data)
+
+class SectionListApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        id = serializers.IntegerField()
+        name = serializers.CharField()
+
+    class FilterSerializer(serializers.Serializer):
+        name = serializers.CharField(required=False)
+
+    def get(self, request):
+        filters_serializer = self.FilterSerializer(data=request.query_params)
+        filters_serializer.is_valid(raise_exception=True)
+
+        sections = section_list(filters=filters_serializer.validated_data)
+
+        data = self.OutputSerializer(sections, many=True).data
         return Response(data)

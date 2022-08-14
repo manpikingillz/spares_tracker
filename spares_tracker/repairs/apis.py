@@ -8,6 +8,7 @@ from spares_tracker.spareparts.models import SparePart
 from spares_tracker.repairs.models import Repair, RepairProblem, RepairProblemRecommendation, RepairSparePartRecommendation
 from spares_tracker.repairs.services import repair_comment_create, repair_create, repair_problem_recommendation_update, repair_sparepart_recommendation_update, repair_update
 from spares_tracker.common.utils import get_object
+from spares_tracker.employee.models import Section
 from spares_tracker.users.models import BaseUser
 from spares_tracker.vehicles.models import Vehicle
 
@@ -44,6 +45,8 @@ class RepairListApi(ApiAuthMixin, APIView):
             id = serializers.IntegerField()
             name = serializers.CharField(max_length=255)
             description = serializers.CharField()
+        class SectionSerializer(serializers.Serializer):
+            name = serializers.CharField()
 
         id = serializers.IntegerField()
         vehicle = VehicleSerializer()
@@ -53,6 +56,7 @@ class RepairListApi(ApiAuthMixin, APIView):
         problems = RepairProblemSerializer(many=True)
         created_at = serializers.DateTimeField()
         status = serializers.CharField(max_length=255)
+        section = SectionSerializer()
 
     class FilterSerializer(serializers.Serializer):
         vehicle = serializers.PrimaryKeyRelatedField(queryset=Vehicle.objects.all(), required=False)
@@ -101,13 +105,13 @@ class RepairDetailApi(ApiAuthMixin, APIView):
 class RepairUpdateApi(ApiAuthMixin, APIView):
     class InputSerializer(serializers.Serializer):
         status = serializers.ChoiceField(choices=Repair.Status.choices, required=False)
+        section = serializers.PrimaryKeyRelatedField(queryset=Section.objects.all(), required=False)
 
     def post(self, request, repair_id):
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         repair = get_object(Repair, pk=repair_id)
-        print(f'serializer.validated_data: {serializer.validated_data}')
         repair_update(repair=repair, data=serializer.validated_data)
         return Response(status=status.HTTP_200_OK)
 

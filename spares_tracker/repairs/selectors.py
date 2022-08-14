@@ -1,6 +1,6 @@
 from django.db.models.query import QuerySet
-from spares_tracker.repairs.models import Repair, RepairProblem, RepairSparePartRecommendation
-from spares_tracker.repairs.filters import BaseRepairFilter, BaseRepairProblemRecommendationFilter, BaseRepairSparePartRecommendationFilter
+from spares_tracker.repairs.models import Repair, RepairComment, RepairProblem, RepairSparePartRecommendation
+from spares_tracker.repairs.filters import BaseRepairCommentFilter, BaseRepairFilter, BaseRepairProblemRecommendationFilter, BaseRepairSparePartRecommendationFilter
 from spares_tracker.common.utils import get_object
 from spares_tracker.repairs.models import RepairProblemRecommendation
 
@@ -35,3 +35,9 @@ def repair_sparepart_recommendation_list(*, filters=None) -> QuerySet[RepairSpar
 
     qs = RepairSparePartRecommendation.objects.filter(removed=False)
     return BaseRepairSparePartRecommendationFilter(filters, qs).qs
+
+def repair_comment_list(*, filters=None) -> QuerySet[RepairComment]:
+    filters = filters or {}
+
+    qs = RepairComment.objects.filter(removed=False)
+    return BaseRepairCommentFilter(filters, qs).qs

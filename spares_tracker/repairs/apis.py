@@ -3,10 +3,10 @@ from rest_framework.views import APIView
 from rest_framework import serializers
 from rest_framework import status
 from spares_tracker.api.mixins import ApiAuthMixin
-from spares_tracker.repairs.selectors import repair_detail, repair_list, repair_problem_list, repair_problem_recommendation_list, repair_sparepart_recommendation_list
+from spares_tracker.repairs.selectors import repair_comment_list, repair_detail, repair_list, repair_problem_list, repair_problem_recommendation_list, repair_sparepart_recommendation_list
 from spares_tracker.spareparts.models import SparePart
 from spares_tracker.repairs.models import Repair, RepairProblem, RepairProblemRecommendation, RepairSparePartRecommendation
-from spares_tracker.repairs.services import repair_create, repair_problem_recommendation_update, repair_sparepart_recommendation_update, repair_update
+from spares_tracker.repairs.services import repair_comment_create, repair_create, repair_problem_recommendation_update, repair_sparepart_recommendation_update, repair_update
 from spares_tracker.common.utils import get_object
 from spares_tracker.users.models import BaseUser
 from spares_tracker.vehicles.models import Vehicle
@@ -238,3 +238,43 @@ class RepairProblemRecommendationUpdateApi(ApiAuthMixin, APIView):
             repair_problem_recommendation_update(**serializer.validated_data, added_by=request.user)
 
         return Response(status=status.HTTP_200_OK)
+
+class RepairCommentCreateApi(ApiAuthMixin, APIView):
+    class InputSerializer(serializers.Serializer):
+        repair = serializers.PrimaryKeyRelatedField(queryset=Repair.objects.all())
+        comment = serializers.CharField()
+        commented_by = serializers.PrimaryKeyRelatedField(queryset=BaseUser.objects.all())
+
+    def post(self, request):
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        repair_comment_create(**serializer.validated_data)
+
+        return Response(status=status.HTTP_201_CREATED)
+
+class RepairCommentListApi(ApiAuthMixin, APIView):
+    class OutputSerializer(serializers.Serializer):
+        class BaseUserSerializer(serializers.Serializer):
+            class EmployeeSerializer(serializers.Serializer):
+                id = serializers.IntegerField()
+                full_name = serializers.CharField(max_length=255, required=False)
+                first_name = serializers.CharField(max_length=255, required=False)
+                last_name = serializers.CharField(max_length=255, required=False)
+
+            employee = EmployeeSerializer()
+        id = serializers.IntegerField()
+        repair = serializers.PrimaryKeyRelatedField(queryset=Repair.objects.all())
+        comment = serializers.CharField()
+        commented_by = BaseUserSerializer()
+    class FilterSerializer(serializers.Serializer):
+        repair = serializers.PrimaryKeyRelatedField(queryset=Repair.objects.all())
+
+    def get(self, request):
+        filters_serializer = self.FilterSerializer(data=request.query_params)
+        filters_serializer.is_valid(raise_exception=True)
+
+        repair_comments = repair_comment_list(filters=filters_serializer.validated_data)
+
+        data = self.OutputSerializer(repair_comments, many=True).data
+        return Response(data, status=status.HTTP_200_OK)

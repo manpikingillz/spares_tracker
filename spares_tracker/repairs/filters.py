@@ -1,5 +1,5 @@
 import django_filters
-from spares_tracker.repairs.models import Repair, RepairProblem, RepairProblemRecommendation, RepairSparePartRecommendation
+from spares_tracker.repairs.models import Repair, RepairComment, RepairProblem, RepairProblemRecommendation, RepairSparePartRecommendation
 
 
 class BaseRepairFilter(django_filters.FilterSet):
@@ -22,3 +22,8 @@ class BaseRepairSparePartRecommendationFilter(django_filters.FilterSet):
     class Meta:
         model = RepairSparePartRecommendation
         fields = ('repair', 'sparepart', 'added_by')
+
+class BaseRepairCommentFilter(django_filters.FilterSet):
+    class Meta:
+        model = RepairComment
+        fields = ('repair', 'commented_by')

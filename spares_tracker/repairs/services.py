@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.core.exceptions import ValidationError
-from spares_tracker.repairs.models import Repair, RepairProblem, RepairProblemRecommendation, RepairSparePartRecommendation
+from spares_tracker.repairs.models import Repair, RepairComment, RepairProblem, RepairProblemRecommendation, RepairSparePartRecommendation
 from spares_tracker.common.utils import get_object
 from spares_tracker.spareparts.models import SparePart
 from spares_tracker.common.services import model_update
@@ -111,5 +111,24 @@ def repair_update(*, repair: Repair, data):
     )
 
     return _repair
+
+@transaction.atomic
+def repair_comment_create(
+    *,
+    repair,
+    comment,
+    commented_by
+) -> RepairComment:
+    repair_comment = RepairComment(
+        repair=repair,
+        comment=comment,
+        commented_by=commented_by,
+    )
+
+    repair_comment.full_clean()
+    repair_comment.save()
+    
+    return repair_comment
+
 
 

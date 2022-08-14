@@ -9,7 +9,9 @@ from .apis import (
     RepairSparePartRecommendationListApi,
     RepairSparePartRecommendationUpdateApi,
     RepairProblemRecommendationUpdateApi,
-    RepairUpdateApi
+    RepairUpdateApi,
+    RepairCommentCreateApi,
+    RepairCommentListApi
 )
 
 urlpatterns = [
@@ -22,4 +24,6 @@ urlpatterns = [
     path('spareparts_recommendations/', RepairSparePartRecommendationListApi.as_view(), name='repair_sparepart_recommendations_list'),
     path('problems_recommendations/update/', RepairProblemRecommendationUpdateApi.as_view(), name='repair_problem_recommendations_update'),
     path('spareparts_recommendations/update/', RepairSparePartRecommendationUpdateApi.as_view(), name='repair_sparepart_recommendations_update'),
+    path('repair_comments/create/', RepairCommentCreateApi.as_view(), name='repair_comment_create'),
+    path('repair_comments/', RepairCommentListApi.as_view(), name='repair_comment_list'),
 ]

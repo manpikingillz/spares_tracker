@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from spares_tracker.employee.models import Division, Employee, Region, Station
+from spares_tracker.employee.models import Division, Employee, Region, Section, Station
 
 
 @admin.register(Employee)
@@ -20,4 +20,8 @@ class DivisionAdmin(admin.ModelAdmin):
 
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+@admin.register(Section)
+class SectionAdmin(admin.ModelAdmin):
     list_display = ('name',)

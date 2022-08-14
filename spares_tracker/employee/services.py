@@ -15,7 +15,8 @@ def employee_create(
     email,
     phone_number,
     address,
-    station
+    station,
+    section
 ) -> Employee:
     employee = Employee(
         first_name=first_name,
@@ -25,7 +26,8 @@ def employee_create(
         email=email,
         phone_number=phone_number,
         address=address,
-        station=station
+        station=station,
+        section=section
     )
 
     employee.full_clean()

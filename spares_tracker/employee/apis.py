@@ -6,7 +6,7 @@ from spares_tracker.api.mixins import ApiAuthMixin
 from spares_tracker.common.utils import get_object
 from spares_tracker.employee.services import employee_create, employee_update, employee_delete
 from spares_tracker.employee.selectors import employee_detail, employee_list, station_list
-from spares_tracker.employee.models import Employee, Station
+from spares_tracker.employee.models import Employee, Section, Station
 
 
 class EmployeeCreateApi(ApiAuthMixin, APIView):
@@ -19,6 +19,7 @@ class EmployeeCreateApi(ApiAuthMixin, APIView):
             phone_number = serializers.CharField(max_length=30, required=True)
             address = serializers.CharField(max_length=255, required=False)
             station =  serializers.PrimaryKeyRelatedField(queryset=Station.objects.all())
+            section = serializers.PrimaryKeyRelatedField(queryset=Section.objects.all())
 
 
     def post(self, request):
@@ -32,6 +33,20 @@ class EmployeeCreateApi(ApiAuthMixin, APIView):
 
 class EmployeeListApi(ApiAuthMixin, APIView):
     class OutputSerializer(serializers.Serializer):
+        class StationSerializer(serializers.Serializer):
+            class DivisionSerializer(serializers.Serializer):
+                class RegionSerializer(serializers.Serializer):
+                    id = serializers.IntegerField()
+                    name = serializers.CharField()
+                id = serializers.IntegerField()
+                name = serializers.CharField()
+                region = RegionSerializer()
+            id = serializers.IntegerField()
+            name = serializers.CharField()
+            division = DivisionSerializer()
+        class SectionSerializer(serializers.Serializer):
+            id = serializers.IntegerField()
+            name = serializers.CharField()
         id = serializers.IntegerField()
         first_name = serializers.CharField(max_length=255, required=True)
         last_name = serializers.CharField(max_length=255, required=True)
@@ -41,7 +56,8 @@ class EmployeeListApi(ApiAuthMixin, APIView):
         email = serializers.EmailField(max_length=255, required=True)
         phone_number = serializers.CharField(max_length=30, required=True)
         address = serializers.CharField(max_length=255, required=False)
-        station =  serializers.PrimaryKeyRelatedField(queryset=Station.objects.all())
+        station =  StationSerializer()
+        section = SectionSerializer()
 
 
     class FilterSerializer(serializers.Serializer):
